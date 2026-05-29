@@ -1,0 +1,1105 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Carta Vini · Admin · Cafè Liberty</title>
+<style>
+  /* ─────────────────────────────────────────────
+     Tokens — derived from Cafè Liberty palette,
+     but the dashboard is a sans-serif internal
+     tool, distinct from the public site.
+     ───────────────────────────────────────────── */
+  :root {
+    --burgundy:        #6E2C36;
+    --burgundy-deep:   #571E27;
+    --burgundy-tint:   #FAF1F2;
+
+    --ink:             #14110F;
+    --ink-2:           #3A332E;
+    --mute:            #6B6259;
+    --mute-2:          #98908A;
+    --line:            #E7E2DA;
+    --line-2:          #F1ECE3;
+    --paper:           #FFFFFF;
+    --surface:         #FBFAF7;
+
+    --danger:          #B23A3A;
+    --success:         #2F6A4E;
+
+    --r-xs: 4px;
+    --r-sm: 6px;
+    --r-md: 10px;
+    --r-lg: 14px;
+    --r-pill: 999px;
+
+    --shadow-1: 0 1px 2px rgba(20,17,15,.05);
+    --shadow-2: 0 6px 20px rgba(20,17,15,.08), 0 2px 4px rgba(20,17,15,.04);
+    --shadow-3: 0 18px 44px rgba(20,17,15,.14), 0 4px 10px rgba(20,17,15,.06);
+
+    --ease: cubic-bezier(.22,.61,.36,1);
+
+    --font:
+      -apple-system, BlinkMacSystemFont,
+      "Segoe UI", "SF Pro Text",
+      ui-sans-serif, system-ui,
+      "Helvetica Neue", Helvetica, Arial,
+      sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--font);
+    color: var(--ink);
+    background: var(--paper);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    min-height: 100vh;
+  }
+  button { font-family: inherit; cursor: pointer; }
+  input, select, textarea, button { font-family: inherit; font-size: inherit; color: inherit; }
+  input, select, textarea {
+    width: 100%;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-sm);
+    padding: 10px 12px;
+    transition: border-color var(--ease) 160ms, box-shadow var(--ease) 160ms;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--burgundy);
+    box-shadow: 0 0 0 3px rgba(110,44,54,.12);
+  }
+  textarea { resize: vertical; min-height: 92px; line-height: 1.5; }
+  label { display: block; font-size: 13px; font-weight: 600; color: var(--ink-2); margin-bottom: 6px; letter-spacing: .01em; }
+  .hint { font-size: 12px; color: var(--mute); margin-top: 6px; }
+
+  /* ── Buttons ────────────────────────────── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 8px;
+    height: 38px;
+    padding: 0 16px;
+    border-radius: var(--r-sm);
+    border: 1px solid transparent;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: .005em;
+    transition: background-color var(--ease) 160ms, border-color var(--ease) 160ms, color var(--ease) 160ms;
+    white-space: nowrap;
+  }
+  .btn-primary { background: var(--burgundy); color: #fff; }
+  .btn-primary:hover { background: var(--burgundy-deep); }
+  .btn-ghost { background: transparent; color: var(--ink-2); border-color: var(--line); }
+  .btn-ghost:hover { background: var(--surface); border-color: var(--mute-2); }
+  .btn-danger {
+    background: transparent; color: var(--danger);
+    border-color: rgba(178,58,58,.32);
+  }
+  .btn-danger:hover { background: rgba(178,58,58,.06); border-color: var(--danger); }
+  .btn-link {
+    background: none; border: none; padding: 0; height: auto;
+    color: var(--burgundy); font-weight: 500;
+  }
+  .btn-link:hover { text-decoration: underline; }
+
+  /* ─────────────────────────────────────────
+     VIEW SWITCHER
+     ───────────────────────────────────────── */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ─────────────────────────────────────────
+     VIEW 1 — LOGIN
+     ───────────────────────────────────────── */
+  #view-login.active {
+    min-height: 100vh;
+    background:
+      radial-gradient(1200px 600px at 50% -200px, rgba(110,44,54,.06), transparent 60%),
+      var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .login-card {
+    width: 100%;
+    max-width: 380px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-2);
+    padding: 36px 32px 28px;
+  }
+  .login-logo {
+    width: 64px; height: 64px;
+    margin: 0 auto 18px;
+    border-radius: var(--r-pill);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .login-logo img { width: 100%; height: 100%; object-fit: cover; }
+  .login-title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 4px;
+    letter-spacing: -.01em;
+  }
+  .login-sub {
+    text-align: center;
+    font-size: 13px;
+    color: var(--mute);
+    margin: 0 0 24px;
+  }
+  .login-form { display: flex; flex-direction: column; gap: 14px; }
+  .login-form .btn { width: 100%; height: 42px; margin-top: 6px; }
+  .login-error {
+    background: rgba(178,58,58,.08);
+    color: var(--danger);
+    border: 1px solid rgba(178,58,58,.24);
+    padding: 9px 12px;
+    border-radius: var(--r-sm);
+    font-size: 13px;
+    display: none;
+  }
+  .login-error.show { display: block; }
+  .login-foot {
+    text-align: center;
+    font-size: 12px;
+    color: var(--mute-2);
+    margin-top: 22px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+
+  /* ─────────────────────────────────────────
+     APP SHELL  (views 2 + 3)
+     ───────────────────────────────────────── */
+  .app-topbar {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar-inner {
+    max-width: 880px;
+    margin: 0 auto;
+    height: 56px;
+    padding: 0 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
+  }
+  .topbar-brand {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 700; font-size: 14px;
+    letter-spacing: -.005em;
+  }
+  .topbar-brand .dot {
+    width: 22px; height: 22px;
+    border-radius: var(--r-pill);
+    background: var(--burgundy);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-weight: 700; font-size: 11px;
+    font-family: Georgia, serif; /* tiny tip of the hat to the Liberty L */
+  }
+  .topbar-brand .meta {
+    color: var(--mute); font-weight: 500; margin-left: 2px;
+  }
+  .app-main {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 28px 20px 120px;
+  }
+  .page-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .page-title { font-size: 22px; font-weight: 700; margin: 0; letter-spacing: -.012em; }
+  .page-count { font-size: 13px; color: var(--mute); font-variant-numeric: tabular-nums; }
+
+  /* ─────────────────────────────────────────
+     VIEW 2 — LIST
+     ───────────────────────────────────────── */
+  .search-wrap { position: relative; margin-bottom: 12px; }
+  .search-wrap input {
+    padding-left: 36px;
+    height: 40px;
+  }
+  .search-wrap .icon {
+    position: absolute; left: 11px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--mute);
+    pointer-events: none;
+  }
+
+  /* ── Filters ───────────────────────────── */
+  .filters {
+    display: flex; flex-wrap: wrap; align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .chip-group {
+    display: inline-flex;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    padding: 3px;
+    gap: 2px;
+  }
+  .chip {
+    border: none;
+    background: transparent;
+    color: var(--ink-2);
+    font-size: 13px;
+    font-weight: 500;
+    height: 28px;
+    padding: 0 12px;
+    border-radius: var(--r-pill);
+    transition: background-color var(--ease) 140ms, color var(--ease) 140ms;
+  }
+  .chip:hover { color: var(--ink); }
+  .chip.active {
+    background: var(--paper);
+    color: var(--burgundy);
+    box-shadow: 0 1px 2px rgba(20,17,15,.08), inset 0 0 0 1px var(--line);
+  }
+  .filter-select {
+    position: relative;
+  }
+  .filter-select select {
+    appearance: none;
+    -webkit-appearance: none;
+    height: 34px;
+    padding: 0 30px 0 12px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-2);
+    cursor: pointer;
+    width: auto;
+    min-width: 0;
+  }
+  .filter-select select.has-value {
+    color: var(--burgundy);
+    background: var(--burgundy-tint);
+    border-color: rgba(110,44,54,.24);
+  }
+  .filter-select::after {
+    content: "";
+    position: absolute;
+    right: 11px; top: 50%;
+    width: 8px; height: 8px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: translateY(-70%) rotate(45deg);
+    color: var(--mute);
+    pointer-events: none;
+  }
+  .filter-select:has(select.has-value)::after { color: var(--burgundy); }
+  .filter-clear {
+    border: none; background: transparent;
+    color: var(--mute);
+    font-size: 13px;
+    font-weight: 500;
+    height: 28px;
+    padding: 0 6px;
+    border-radius: var(--r-sm);
+    margin-left: auto;
+  }
+  .filter-clear:hover { color: var(--burgundy); }
+  .filter-clear[hidden] { display: none; }
+
+  .wine-list {
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    background: var(--paper);
+    overflow: hidden;
+  }
+  .wine-row {
+    display: grid;
+    grid-template-columns: 1fr 110px 90px 64px;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 16px;
+    border-top: 1px solid var(--line-2);
+    transition: background-color var(--ease) 120ms;
+  }
+  .wine-row:first-child { border-top: none; }
+  .wine-row:hover { background: var(--surface); }
+  .wine-name {
+    display: flex; flex-direction: column; gap: 2px; min-width: 0;
+  }
+  .wine-name .nm {
+    font-weight: 600; font-size: 15px;
+    color: var(--ink);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .wine-name .rg {
+    font-size: 12px; color: var(--mute);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .badge {
+    display: inline-flex; align-items: center;
+    height: 22px; padding: 0 10px;
+    border-radius: var(--r-pill);
+    font-size: 11.5px; font-weight: 600;
+    letter-spacing: .02em;
+    background: var(--surface);
+    color: var(--ink-2);
+    border: 1px solid var(--line);
+    width: max-content;
+  }
+  .badge.rosso     { background: rgba(110,44,54,.08); color: var(--burgundy); border-color: rgba(110,44,54,.18); }
+  .badge.bianco    { background: #FBF6E5; color: #7A5C18; border-color: #EADBA1; }
+  .badge.bollicine { background: #E9F1EB; color: #2F6A4E; border-color: #C5DBCB; }
+  .badge.passiti   { background: #FBF1E0; color: #9A6B1E; border-color: #E8CF9E; }
+  .badge.grappe    { background: #F1EDE6; color: #5C5046; border-color: #DED5C7; }
+
+  .wine-price {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .row-edit {
+    background: none; border: none;
+    color: var(--mute);
+    width: 30px; height: 30px;
+    border-radius: var(--r-sm);
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-left: auto;
+    transition: background-color var(--ease) 120ms, color var(--ease) 120ms;
+  }
+  .row-edit:hover { color: var(--burgundy); background: var(--burgundy-tint); }
+
+  .empty-state {
+    text-align: center;
+    padding: 56px 20px;
+    color: var(--mute);
+    font-size: 14px;
+  }
+  .empty-state strong { display: block; color: var(--ink); font-size: 15px; margin-bottom: 4px; }
+
+  /* Floating add */
+  .fab {
+    position: fixed;
+    right: 24px; bottom: 24px;
+    width: 52px; height: 52px;
+    border-radius: var(--r-pill);
+    background: var(--burgundy);
+    color: #fff;
+    border: none;
+    box-shadow: var(--shadow-3);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 20;
+    transition: transform var(--ease) 160ms, background-color var(--ease) 160ms;
+  }
+  .fab:hover { background: var(--burgundy-deep); transform: translateY(-1px); }
+  .fab svg { width: 22px; height: 22px; }
+
+  /* ─────────────────────────────────────────
+     VIEW 3 — FORM
+     ───────────────────────────────────────── */
+  .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: none; border: none;
+    color: var(--mute); font-size: 13px;
+    padding: 0; margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .back-link:hover { color: var(--ink); }
+
+  .form-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    padding: 24px;
+  }
+  .form-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .form-grid .full { grid-column: 1 / -1; }
+
+  .char-counter {
+    float: right;
+    font-size: 12px;
+    color: var(--mute);
+    font-variant-numeric: tabular-nums;
+  }
+  .char-counter.warn { color: var(--burgundy); }
+
+  .price-input {
+    position: relative;
+  }
+  .price-input input { padding-left: 26px; }
+  .price-input::before {
+    content: "€";
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    color: var(--mute); font-weight: 500;
+  }
+
+  .form-actions {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line-2);
+  }
+  .form-actions .right { display: flex; gap: 10px; }
+
+  /* ─────────────────────────────────────────
+     TOAST + DIALOG
+     ───────────────────────────────────────── */
+  .toast {
+    position: fixed;
+    left: 50%; bottom: 28px;
+    transform: translate(-50%, 24px);
+    background: var(--ink);
+    color: #fff;
+    padding: 11px 18px;
+    border-radius: var(--r-pill);
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: var(--shadow-3);
+    display: flex; align-items: center; gap: 8px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--ease) 220ms, transform var(--ease) 220ms;
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .toast .dot-ok {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #6CC791;
+  }
+
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(20,17,15,.45);
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 20px;
+    z-index: 50;
+  }
+  .modal-backdrop.show { display: flex; }
+  .modal {
+    background: var(--paper);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-3);
+    width: 100%; max-width: 380px;
+    padding: 24px;
+  }
+  .modal h3 { margin: 0 0 6px; font-size: 16px; font-weight: 700; }
+  .modal p  { margin: 0 0 18px; font-size: 14px; color: var(--mute); line-height: 1.5; }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+  .modal-actions .btn-danger { background: var(--danger); color: #fff; border-color: var(--danger); }
+  .modal-actions .btn-danger:hover { background: #951F1F; border-color: #951F1F; }
+
+  /* ─────────────────────────────────────────
+     RESPONSIVE
+     ───────────────────────────────────────── */
+  @media (max-width: 540px) {
+    .wine-row {
+      grid-template-columns: 1fr auto 40px;
+      grid-template-areas:
+        "name  price edit"
+        "cat   cat   cat";
+      row-gap: 8px;
+    }
+    .wine-name  { grid-area: name; }
+    .wine-price { grid-area: price; }
+    .row-edit   { grid-area: edit; }
+    .wine-cat   { grid-area: cat; }
+    .form-grid { grid-template-columns: 1fr; }
+    .app-main { padding: 22px 16px 120px; }
+    .topbar-inner { padding: 0 16px; }
+  }
+
+  @media (min-width: 1280px) {
+    /* still capped at 640 per spec; just a little extra topbar breathing room */
+    .topbar-inner { max-width: 1100px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ───────────── VIEW 1 — LOGIN ───────────── -->
+<section id="view-login" class="view active" data-screen-label="01 Login">
+  <div class="login-card">
+    <div class="login-logo">
+      <img src="assets/liberty-logo.avif" alt="Cafè Liberty" />
+    </div>
+    <h1 class="login-title">Carta Vini</h1>
+    <p class="login-sub">Accesso amministrazione · Cafè Liberty</p>
+
+    <form id="login-form" class="login-form" autocomplete="on" novalidate>
+      <div>
+        <label for="login-email">Email</label>
+        <input id="login-email" type="email" autocomplete="username" placeholder="nome@ristorante.com" required />
+      </div>
+      <div>
+        <label for="login-pass">Password</label>
+        <input id="login-pass" type="password" autocomplete="current-password" placeholder="••••••••" required />
+      </div>
+      <div id="login-error" class="login-error">Credenziali non valide. Riprova.</div>
+      <button type="submit" class="btn btn-primary">Accedi</button>
+    </form>
+
+    <p class="login-foot">v1.0 · interno</p>
+  </div>
+</section>
+
+
+<!-- ───────────── VIEW 2 — LIST ───────────── -->
+<section id="view-list" class="view" data-screen-label="02 Wine list">
+  <header class="app-topbar">
+    <div class="topbar-inner">
+      <div class="topbar-brand">
+        <span class="dot">L</span>
+        <span>Carta Vini</span>
+        <span class="meta">· admin</span>
+      </div>
+      <button id="logout-btn" class="btn btn-ghost">Esci</button>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <div class="page-head">
+      <h1 class="page-title">Vini</h1>
+      <span class="page-count" id="page-count">— voci</span>
+    </div>
+
+    <div class="search-wrap">
+      <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="search" type="search" placeholder="Cerca per nome…" autocomplete="off" />
+    </div>
+
+    <div class="filters" id="filters">
+      <div class="chip-group" id="category-chips" role="tablist" aria-label="Filtra per categoria">
+        <button type="button" class="chip active" data-cat="">Tutti</button>
+        <button type="button" class="chip" data-cat="Rosso">Rosso</button>
+        <button type="button" class="chip" data-cat="Bianco">Bianco</button>
+        <button type="button" class="chip" data-cat="Bollicine">Bollicine</button>
+        <button type="button" class="chip" data-cat="Passiti">Passiti</button>
+        <button type="button" class="chip" data-cat="Grappe">Grappe</button>
+      </div>
+      <div class="filter-select">
+        <select id="filter-region" aria-label="Filtra per regione"></select>
+      </div>
+      <div class="filter-select">
+        <select id="filter-tipologia" aria-label="Filtra per tipologia"></select>
+      </div>
+      <button type="button" class="filter-clear" id="filter-clear" hidden>Azzera</button>
+    </div>
+
+    <div id="wine-list" class="wine-list"></div>
+  </main>
+
+  <button id="fab-add" class="fab" aria-label="Aggiungi vino">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+  </button>
+</section>
+
+
+<!-- ───────────── VIEW 3 — EDIT / ADD ───────────── -->
+<section id="view-form" class="view" data-screen-label="03 Edit wine">
+  <header class="app-topbar">
+    <div class="topbar-inner">
+      <div class="topbar-brand">
+        <span class="dot">L</span>
+        <span>Carta Vini</span>
+        <span class="meta">· admin</span>
+      </div>
+      <button id="logout-btn-2" class="btn btn-ghost">Esci</button>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <button id="back-btn" class="back-link" type="button">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      Torna alla lista
+    </button>
+
+    <div class="page-head">
+      <h1 class="page-title" id="form-title">Nuovo vino</h1>
+    </div>
+
+    <div class="form-card">
+      <form id="wine-form" novalidate>
+        <div class="form-grid">
+          <div class="full">
+            <label for="f-name">Nome</label>
+            <input id="f-name" type="text" required placeholder="es. Lambrusco di Sorbara" />
+          </div>
+
+          <div>
+            <label for="f-category">Categoria</label>
+            <select id="f-category" required>
+              <option value="Rosso">Rosso</option>
+              <option value="Bianco">Bianco</option>
+              <option value="Bollicine">Bollicine</option>
+              <option value="Passiti">Passiti</option>
+              <option value="Grappe">Grappe</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="f-region">Regione</label>
+            <input id="f-region" type="text" required placeholder="es. Emilia-Romagna" />
+          </div>
+
+          <div>
+            <label for="f-tipologia">Tipologia</label>
+            <input id="f-tipologia" type="text" placeholder="es. Secco, fermo, frizzante" />
+          </div>
+
+          <!-- AGGIUNTO — campi annata e produttore -->
+          <div>
+            <label for="f-annata">Annata</label>
+            <input id="f-annata" type="number" min="1900" max="2099" placeholder="es. 2022" />
+          </div>
+
+          <div>
+            <label for="f-produttore">Produttore</label>
+            <input id="f-produttore" type="text" placeholder="es. Cantina Sociale" />
+          </div>
+
+          <div class="price-input">
+            <label for="f-price">Prezzo</label>
+            <input id="f-price" type="number" min="0" step="0.50" placeholder="0,00" required />
+          </div>
+
+          <div class="full">
+            <label for="f-desc">
+              Descrizione breve
+              <span class="char-counter" id="char-counter">0 / 120</span>
+            </label>
+            <textarea id="f-desc" maxlength="120" placeholder="Profilo aromatico, abbinamenti, note del sommelier…"></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button id="delete-btn" type="button" class="btn btn-danger" style="display:none">Elimina</button>
+          <div class="right" style="margin-left:auto">
+            <button type="button" id="cancel-btn" class="btn btn-ghost">Annulla</button>
+            <button type="submit" class="btn btn-primary">Salva</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </main>
+</section>
+
+
+<!-- ───────────── TOAST & MODAL ───────────── -->
+<div id="toast" class="toast"><span class="dot-ok"></span><span id="toast-msg">Salvato</span></div>
+
+<div id="modal" class="modal-backdrop" role="dialog" aria-modal="true">
+  <div class="modal">
+    <h3>Eliminare il vino?</h3>
+    <p id="modal-msg">L'operazione non può essere annullata. Il vino verrà rimosso dalla carta.</p>
+    <div class="modal-actions">
+      <button id="modal-cancel" type="button" class="btn btn-ghost">Annulla</button>
+      <button id="modal-confirm" type="button" class="btn btn-danger">Elimina</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- AGGIUNTO — Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+/* ────────────────────────────────────────────
+   STATE & STORAGE → SUPABASE
+   ──────────────────────────────────────────── */
+const STORAGE_KEY  = 'cl_carta_vini_v1';
+const SESSION_KEY  = 'cl_admin_session_v1';
+const CREDS = { email: 'admin@restaurant.com', password: 'admin2025' };
+
+// AGGIUNTO — Supabase client (sostituisce localStorage)
+const SUPABASE_URL = 'https://cbheuxniumykzowkmims.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNiaGV1eG5pdW15a3pvd2ttaW1zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwMDU3NDYsImV4cCI6MjA5NTU4MTc0Nn0.lC1Bjyk8T0w6xYb7Qr7ip6STypW7IYDAXo12o9lAJ0Y';
+const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const SEED = [
+  { name: 'Lambrusco di Sorbara',          category: 'Rosso',     region: 'Emilia-Romagna', tipologia: 'Frizzante secco',      price: 22, desc: 'Rubino tenue, spuma vivace. Perfetto con i salumi della tradizione reggiana.' },
+  { name: 'Lambrusco Grasparossa',         category: 'Rosso',     region: 'Emilia-Romagna', tipologia: 'Frizzante amabile',    price: 20, desc: 'Più strutturato, con note di amarena. Si abbina ai bolliti.' },
+  { name: 'Sangiovese di Romagna Superiore',category: 'Rosso',    region: 'Emilia-Romagna', tipologia: 'Fermo',                price: 26, desc: 'Tannini levigati, finale sapido. Ideale con i primi al ragù.' },
+  { name: 'Barolo DOCG',                   category: 'Rosso',     region: 'Piemonte',       tipologia: 'Fermo',                price: 58, desc: 'Granato, note di rosa, cuoio e tartufo. Per le carni più strutturate.' },
+  { name: 'Brunello di Montalcino',        category: 'Rosso',     region: 'Toscana',        tipologia: 'Fermo',                price: 72, desc: 'Eleganza toscana, lungo affinamento in legno. Una verticale di sensazioni.' },
+  { name: 'Chianti Classico Riserva',      category: 'Rosso',     region: 'Toscana',        tipologia: 'Fermo',                price: 38, desc: 'Rubino intenso, ciliegia e tabacco dolce.' },
+  { name: 'Pignoletto Colli Bolognesi',    category: 'Bianco',    region: 'Emilia-Romagna', tipologia: 'Fermo',                price: 18, desc: 'Fresco, agrumato. Compagno di crescentine e antipasti di pesce.' },
+  { name: 'Albana di Romagna Secco',       category: 'Bianco',    region: 'Emilia-Romagna', tipologia: 'Fermo',                price: 24, desc: 'Dorato, mela cotogna e miele d\u2019acacia.' },
+  { name: 'Vermentino di Sardegna',        category: 'Bianco',    region: 'Sardegna',       tipologia: 'Fermo',                price: 22, desc: 'Sapido, iodato. Pesce crudo e crostacei.' },
+  { name: 'Soave Classico',                category: 'Bianco',    region: 'Veneto',         tipologia: 'Fermo',                price: 19, desc: 'Mandorla amara nel finale, beva di estrema piacevolezza.' },
+  { name: 'Franciacorta Brut',             category: 'Bollicine', region: 'Lombardia',      tipologia: 'Metodo Classico',      price: 42, desc: 'Perlage finissimo, croste di pane e agrumi. Apre la cena.' },
+  { name: 'Valdobbiadene Prosecco Superiore', category: 'Bollicine', region: 'Veneto',     tipologia: 'Metodo Martinotti',    price: 28, desc: 'Mela verde e glicine. Aperitivo per eccellenza.' },
+  { name: 'Trento DOC Riserva',            category: 'Bollicine', region: 'Trentino',       tipologia: 'Metodo Classico',      price: 48, desc: 'Lunghi lieviti, struttura e cremositá. Per tutto pasto.' },
+  { name: 'Vin Santo del Chianti',         category: 'Passiti',   region: 'Toscana',        tipologia: 'Passito',              price: 34, desc: 'Albicocca secca, miele e noce. Con i cantucci, da meditazione.' },
+  { name: 'Passito di Pantelleria',        category: 'Passiti',   region: 'Sicilia',        tipologia: 'Passito',              price: 38, desc: 'Zibibbo dorato, fico e zagara. Su pasticceria secca e formaggi erborinati.' },
+  { name: 'Recioto di Soave',              category: 'Passiti',   region: 'Veneto',         tipologia: 'Passito',              price: 30, desc: 'Dolce ma fresco, frutta candita e fiori. Chiude la cena con eleganza.' },
+  { name: 'Grappa di Lambrusco',           category: 'Grappe',    region: 'Emilia-Romagna', tipologia: 'Distillato',           price: 8,  desc: 'Morbida e fruttata, dalle vinacce del territorio. Servire fresca.' },
+  { name: 'Grappa Barolo Riserva',         category: 'Grappe',    region: 'Piemonte',       tipologia: 'Distillato barricato', price: 12, desc: 'Affinata in legno, note di vaniglia e spezie dolci.' },
+  { name: 'Grappa di Moscato',             category: 'Grappe',    region: 'Piemonte',       tipologia: 'Distillato aromatico', price: 9,  desc: 'Profumata e delicata, ideale a fine pasto.' },
+];
+
+const uid = () => 'w_' + Math.random().toString(36).slice(2, 9);
+
+function loadWines() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      const seeded = SEED.map(w => ({ id: uid(), ...w }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(seeded));
+      return seeded;
+    }
+    return JSON.parse(raw);
+  } catch (e) {
+    console.warn('Storage parse error, reseeding', e);
+    const seeded = SEED.map(w => ({ id: uid(), ...w }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(seeded));
+    return seeded;
+  }
+}
+function saveWines(list) { localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
+
+let wines = []; // AGGIUNTO — dati caricati da Supabase, non più da localStorage
+let currentEditId = null;
+let filters = { search: '', category: '', region: '', tipologia: '' };
+
+// AGGIUNTO — Caricamento vini da Supabase
+async function fetchWines() {
+  const { data, error } = await _supabase.from('vini').select('*').order('created_at', { ascending: false });
+  if (error) { toast('Errore caricamento: ' + error.message, true); return; }
+  wines = data.map(row => ({
+    id: row.id,
+    name: row.nome,
+    category: row.categoria.charAt(0).toUpperCase() + row.categoria.slice(1),
+    region: row.regione,
+    tipologia: row.tipologia || '',
+    price: Number(row.prezzo),
+    desc: row.descrizione || '',
+    annata: row.annata || null,
+    produttore: row.produttore || '',
+  }));
+}
+
+/* ────────────────────────────────────────────
+   ROUTING (no page reload)
+   ──────────────────────────────────────────── */
+const views = {
+  login: document.getElementById('view-login'),
+  list:  document.getElementById('view-list'),
+  form:  document.getElementById('view-form'),
+};
+
+async function goto(name) { // AGGIUNTO — async per fetch Supabase
+  Object.values(views).forEach(v => v.classList.remove('active'));
+  views[name].classList.add('active');
+  window.scrollTo({ top: 0 });
+  if (name === 'list') { await fetchWines(); refreshFilterOptions(); renderList(); } // AGGIUNTO — fetch da Supabase
+  if (name === 'login') {
+    document.getElementById('login-form').reset();
+    document.getElementById('login-error').classList.remove('show');
+  }
+}
+
+function isAuthed() { return sessionStorage.getItem(SESSION_KEY) === '1'; }
+
+/* ────────────────────────────────────────────
+   LOGIN
+   ──────────────────────────────────────────── */
+document.getElementById('login-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const email = document.getElementById('login-email').value.trim().toLowerCase();
+  const pass  = document.getElementById('login-pass').value;
+  const err   = document.getElementById('login-error');
+
+  if (email === CREDS.email && pass === CREDS.password) {
+    sessionStorage.setItem(SESSION_KEY, '1');
+    err.classList.remove('show');
+    goto('list');
+  } else {
+    err.classList.add('show');
+    document.getElementById('login-pass').focus();
+    document.getElementById('login-pass').select();
+  }
+});
+
+function logout() {
+  sessionStorage.removeItem(SESSION_KEY);
+  goto('login');
+}
+document.getElementById('logout-btn').addEventListener('click', logout);
+document.getElementById('logout-btn-2').addEventListener('click', logout);
+
+/* ────────────────────────────────────────────
+   LIST RENDERING + SEARCH
+   ──────────────────────────────────────────── */
+const listEl  = document.getElementById('wine-list');
+const countEl = document.getElementById('page-count');
+
+function renderList() {
+  const term = filters.search.trim().toLowerCase();
+  let filtered = wines.filter(w => {
+    if (term && !w.name.toLowerCase().includes(term)) return false;
+    if (filters.category  && w.category  !== filters.category)  return false;
+    if (filters.region    && w.region    !== filters.region)    return false;
+    if (filters.tipologia && w.tipologia !== filters.tipologia) return false;
+    return true;
+  });
+
+  // sort: category then name for stable UX
+  const catOrder = { 'Bollicine': 0, 'Bianco': 1, 'Rosso': 2, 'Passiti': 3, 'Grappe': 4 };
+  filtered.sort((a, b) => {
+    const c = (catOrder[a.category] ?? 9) - (catOrder[b.category] ?? 9);
+    return c !== 0 ? c : a.name.localeCompare(b.name, 'it');
+  });
+
+  countEl.textContent = `${filtered.length} ${filtered.length === 1 ? 'voce' : 'voci'}`;
+
+  const hasActiveFilter = !!(filters.search || filters.category || filters.region || filters.tipologia);
+  document.getElementById('filter-clear').hidden = !hasActiveFilter;
+
+  if (!filtered.length) {
+    listEl.innerHTML = `
+      <div class="empty-state">
+        <strong>${hasActiveFilter ? 'Nessun vino trovato' : 'Nessun vino in carta'}</strong>
+        ${hasActiveFilter ? 'Prova a modificare o azzerare i filtri.' : 'Aggiungine uno con il pulsante in basso a destra.'}
+      </div>`;
+    return;
+  }
+
+  listEl.innerHTML = filtered.map(w => `
+    <div class="wine-row" data-id="${w.id}">
+      <div class="wine-name">
+        <span class="nm">${escapeHtml(w.name)}</span>
+        <span class="rg">${escapeHtml(w.region)}${w.tipologia ? ' · ' + escapeHtml(w.tipologia) : ''}</span>
+      </div>
+      <div class="wine-cat"><span class="badge ${w.category.toLowerCase()}">${w.category}</span></div>
+      <div class="wine-price">€ ${formatPrice(w.price)}</div>
+      <button class="row-edit" title="Modifica" aria-label="Modifica ${escapeHtml(w.name)}">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5Z"/></svg>
+      </button>
+    </div>
+  `).join('');
+
+  listEl.querySelectorAll('.wine-row').forEach(row => {
+    row.addEventListener('click', () => openEdit(row.dataset.id));
+  });
+}
+
+function escapeHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+function formatPrice(n) {
+  const v = Number(n) || 0;
+  return v.toFixed(2).replace('.', ',');
+}
+
+document.getElementById('search').addEventListener('input', e => {
+  filters.search = e.target.value;
+  renderList();
+});
+
+/* ── Filter wiring ── */
+function uniqueSorted(values) {
+  return [...new Set(values.filter(Boolean))].sort((a, b) => a.localeCompare(b, 'it'));
+}
+function refreshFilterOptions() {
+  // Populate regions / tipologie from the data each render-time so adds reflect immediately.
+  const regionSel    = document.getElementById('filter-region');
+  const tipologiaSel = document.getElementById('filter-tipologia');
+
+  const regions    = uniqueSorted(wines.map(w => w.region));
+  const tipologie  = uniqueSorted(wines.map(w => w.tipologia));
+
+  const buildOptions = (sel, items, placeholder, value) => {
+    sel.innerHTML = `<option value="">${placeholder}</option>` +
+      items.map(v => `<option value="${escapeHtml(v)}"${v === value ? ' selected' : ''}>${escapeHtml(v)}</option>`).join('');
+    sel.classList.toggle('has-value', !!value);
+  };
+  buildOptions(regionSel,    regions,   'Tutte le regioni',  filters.region);
+  buildOptions(tipologiaSel, tipologie, 'Tutte le tipologie', filters.tipologia);
+}
+
+document.getElementById('category-chips').addEventListener('click', e => {
+  const btn = e.target.closest('.chip');
+  if (!btn) return;
+  filters.category = btn.dataset.cat;
+  document.querySelectorAll('#category-chips .chip').forEach(c => {
+    c.classList.toggle('active', c.dataset.cat === filters.category);
+  });
+  renderList();
+});
+document.getElementById('filter-region').addEventListener('change', e => {
+  filters.region = e.target.value;
+  e.target.classList.toggle('has-value', !!e.target.value);
+  renderList();
+});
+document.getElementById('filter-tipologia').addEventListener('change', e => {
+  filters.tipologia = e.target.value;
+  e.target.classList.toggle('has-value', !!e.target.value);
+  renderList();
+});
+document.getElementById('filter-clear').addEventListener('click', () => {
+  filters = { search: '', category: '', region: '', tipologia: '' };
+  document.getElementById('search').value = '';
+  document.querySelectorAll('#category-chips .chip').forEach(c => {
+    c.classList.toggle('active', c.dataset.cat === '');
+  });
+  refreshFilterOptions();
+  renderList();
+});
+
+/* ────────────────────────────────────────────
+   ADD / EDIT
+   ──────────────────────────────────────────── */
+const formEl  = document.getElementById('wine-form');
+const titleEl = document.getElementById('form-title');
+const deleteBtn = document.getElementById('delete-btn');
+
+document.getElementById('fab-add').addEventListener('click', () => openAdd());
+document.getElementById('back-btn').addEventListener('click', () => goto('list'));
+document.getElementById('cancel-btn').addEventListener('click', () => goto('list'));
+
+function openAdd() {
+  currentEditId = null;
+  titleEl.textContent = 'Nuovo vino';
+  deleteBtn.style.display = 'none';
+  formEl.reset();
+  document.getElementById('f-category').value = 'Rosso';
+  updateCharCounter();
+  goto('form');
+  setTimeout(() => document.getElementById('f-name').focus(), 60);
+}
+
+function openEdit(id) {
+  const w = wines.find(x => x.id === id);
+  if (!w) return;
+  currentEditId = id;
+  titleEl.textContent = 'Modifica vino';
+  deleteBtn.style.display = '';
+  document.getElementById('f-name').value      = w.name;
+  document.getElementById('f-category').value  = w.category;
+  document.getElementById('f-region').value    = w.region;
+  document.getElementById('f-tipologia').value  = w.tipologia || '';
+  document.getElementById('f-price').value      = w.price;
+  document.getElementById('f-annata').value     = w.annata || '';     // AGGIUNTO
+  document.getElementById('f-produttore').value = w.produttore || ''; // AGGIUNTO
+  document.getElementById('f-desc').value       = w.desc || '';
+  updateCharCounter();
+  goto('form');
+}
+
+// live character counter
+const descEl = document.getElementById('f-desc');
+const counterEl = document.getElementById('char-counter');
+function updateCharCounter() {
+  const n = descEl.value.length;
+  counterEl.textContent = `${n} / 120`;
+  counterEl.classList.toggle('warn', n >= 110);
+}
+descEl.addEventListener('input', updateCharCounter);
+
+// AGGIUNTO — Salvataggio su Supabase (sostituisce localStorage)
+formEl.addEventListener('submit', async e => {
+  e.preventDefault();
+  const data = {
+    nome:        document.getElementById('f-name').value.trim(),
+    categoria:   document.getElementById('f-category').value.toLowerCase(),
+    regione:     document.getElementById('f-region').value.trim(),
+    tipologia:   document.getElementById('f-tipologia').value.trim(),
+    prezzo:      parseFloat(document.getElementById('f-price').value) || 0,
+    descrizione: document.getElementById('f-desc').value.trim(),
+    annata:      parseInt(document.getElementById('f-annata').value) || null,
+    produttore:  document.getElementById('f-produttore').value.trim() || null,
+  };
+
+  if (!data.nome) { document.getElementById('f-name').focus(); return; }
+  if (!data.regione) { document.getElementById('f-region').focus(); return; }
+
+  if (currentEditId) {
+    const { error } = await _supabase.from('vini').update(data).eq('id', currentEditId);
+    if (error) { toast('Errore: ' + error.message, true); return; }
+    await goto('list');
+    toast('Modifiche salvate');
+  } else {
+    const { error } = await _supabase.from('vini').insert(data);
+    if (error) { toast('Errore: ' + error.message, true); return; }
+    await goto('list');
+    toast('Vino aggiunto');
+  }
+});
+
+/* ────────────────────────────────────────────
+   DELETE (with confirm)
+   ──────────────────────────────────────────── */
+const modal = document.getElementById('modal');
+const modalMsg = document.getElementById('modal-msg');
+
+deleteBtn.addEventListener('click', () => {
+  if (!currentEditId) return;
+  const w = wines.find(x => x.id === currentEditId);
+  if (!w) return;
+  modalMsg.innerHTML = `Stai per eliminare <strong>${escapeHtml(w.name)}</strong>. L'operazione non può essere annullata.`;
+  modal.classList.add('show');
+});
+document.getElementById('modal-cancel').addEventListener('click', () => modal.classList.remove('show'));
+// AGGIUNTO — Eliminazione da Supabase
+document.getElementById('modal-confirm').addEventListener('click', async () => {
+  const { error } = await _supabase.from('vini').delete().eq('id', currentEditId);
+  if (error) { toast('Errore: ' + error.message, true); modal.classList.remove('show'); return; }
+  modal.classList.remove('show');
+  await goto('list');
+  toast('Vino eliminato');
+});
+modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('show'); });
+
+/* ────────────────────────────────────────────
+   TOAST
+   ──────────────────────────────────────────── */
+let toastTimer = null;
+// AGGIUNTO — supporto feedback errore nel toast
+function toast(msg, isError) {
+  const el = document.getElementById('toast');
+  const dotEl = el.querySelector('.dot-ok');
+  document.getElementById('toast-msg').textContent = msg;
+  if (dotEl) dotEl.style.background = isError ? '#E74C3C' : '#6CC791';
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), isError ? 3500 : 2200);
+}
+
+/* ────────────────────────────────────────────
+   KEYBOARD
+   ──────────────────────────────────────────── */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (modal.classList.contains('show')) modal.classList.remove('show');
+    else if (views.form.classList.contains('active')) goto('list');
+  }
+});
+
+/* ────────────────────────────────────────────
+   BOOT
+   ──────────────────────────────────────────── */
+goto(isAuthed() ? 'list' : 'login');
+</script>
+</body>
+</html>

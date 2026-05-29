@@ -1,0 +1,1542 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Carta dei Vini · Cafè Liberty</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Work+Sans:wght@400;500;600&family=Great+Vibes&display=swap">
+<style>
+  :root {
+    /* — Liberty palette (from design system) — */
+    --liberty-green:        #244F3B;
+    --liberty-green-deep:   #173425;
+    --liberty-green-soft:   #7A8C6E;
+    --liberty-green-mist:   #D7DECC;
+    --liberty-tortora:      #D4C5B0;
+    --liberty-tortora-deep: #B8A689;
+    --liberty-tortora-soft: #EBE1D0;
+    --liberty-black:        #1A1410;
+    --liberty-ink:          #2A2520;
+    --liberty-mute:         #6B6259;
+    --liberty-paper:        #F5EFE3;
+    --liberty-paper-warm:   #EFE6D2;
+    --liberty-paper-cool:   #FAF6EC;
+    --liberty-line:         #D9CFBA;
+    --liberty-gold:         #B58B47;
+    --liberty-gold-soft:    #D4B077;
+    --liberty-burgundy:     #6E2C36;
+    --liberty-rose:         #C29A8C;
+
+    --font-display: "Playfair Display", Georgia, serif;
+    --font-body:    "Lora", Georgia, serif;
+    --font-ui:      "Cormorant Garamond", "Playfair Display", Georgia, serif;
+    --font-sans:    "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-script:  "Great Vibes", "Snell Roundhand", cursive;
+
+    --ease-soft: cubic-bezier(.22,.61,.36,1);
+    --ease-firm: cubic-bezier(.4,0,.2,1);
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--liberty-paper);
+    color: var(--liberty-ink);
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* — Shell — */
+  .app {
+    max-width: 1024px;
+    margin: 0 auto;
+    min-height: 100vh;
+    position: relative;
+  }
+  .view {
+    display: none;
+    animation: viewIn 480ms var(--ease-soft);
+  }
+  .view.active { display: block; }
+  @keyframes viewIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ──────────────────────────────────────────
+     HOME (View 1)
+     ────────────────────────────────────────── */
+  .home {
+    padding: 32px 20px 56px;
+  }
+  .masthead {
+    text-align: center;
+    padding: 16px 0 32px;
+    position: relative;
+  }
+  .masthead .mono {
+    font-family: var(--font-script);
+    font-size: 64px;
+    color: var(--liberty-green);
+    line-height: 1;
+    margin: 0;
+  }
+  .masthead .eyebrow {
+    display: block;
+    font-family: var(--font-ui);
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--liberty-green);
+    margin-top: 14px;
+  }
+  .masthead h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-style: italic;
+    font-size: clamp(34px, 8vw, 52px);
+    line-height: 1.05;
+    margin: 6px 0 0;
+    color: var(--liberty-black);
+    letter-spacing: -0.012em;
+  }
+  .masthead .sub {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    color: var(--liberty-ink);
+    font-size: 15px;
+    line-height: 1.5;
+    margin-top: 12px;
+    max-width: 360px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Decorative divider */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 18px auto 32px;
+    max-width: 320px;
+    color: var(--liberty-green);
+  }
+  .divider .line {
+    flex: 1; height: 1px;
+    background: var(--liberty-green);
+    opacity: .45;
+  }
+  .divider .glyph {
+    font-family: var(--font-script);
+    font-size: 30px;
+    line-height: 1;
+    color: var(--liberty-green);
+    transform: translateY(-2px);
+  }
+  .divider .dot {
+    width: 5px; height: 5px;
+    background: var(--liberty-gold);
+    transform: rotate(45deg);
+  }
+
+  /* Category cards */
+  .cats {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .cat {
+    position: relative;
+    display: block;
+    width: 100%;
+    min-height: 200px;
+    padding: 28px 24px;
+    background: var(--liberty-paper-warm);
+    border: 0;
+    cursor: pointer;
+    text-align: left;
+    overflow: hidden;
+    box-shadow: var(--shadow-inset-line, inset 0 0 0 1px var(--liberty-line));
+    transition: transform 260ms var(--ease-soft),
+                box-shadow 260ms var(--ease-soft),
+                background 260ms var(--ease-soft);
+    font: inherit;
+    color: inherit;
+    isolation: isolate;
+  }
+  .cat::before {
+    /* corner flourishes */
+    content: "";
+    position: absolute;
+    inset: 10px;
+    border: 1px solid var(--liberty-tortora-deep);
+    opacity: 0.55;
+    pointer-events: none;
+    transition: opacity 260ms var(--ease-soft), inset 260ms var(--ease-soft);
+  }
+  .cat:hover,
+  .cat:focus-visible {
+    background: var(--liberty-paper-cool);
+    box-shadow: 0 14px 32px rgba(26,20,16,.10), 0 4px 8px rgba(26,20,16,.05),
+                inset 0 0 0 1px var(--liberty-line);
+    outline: none;
+  }
+  .cat:hover::before { opacity: 1; inset: 8px; }
+  .cat:active { transform: translateY(1px); }
+
+  .cat .row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 110px;
+    gap: 16px;
+    align-items: center;
+    min-height: 160px;
+  }
+  .cat .label {
+    font-family: var(--font-ui);
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--liberty-green);
+    margin-bottom: 8px;
+  }
+  .cat .name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(30px, 7vw, 44px);
+    line-height: 1.02;
+    color: var(--liberty-black);
+    letter-spacing: -0.01em;
+    margin: 0 0 10px;
+  }
+  .cat .name em {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--liberty-green);
+  }
+  .cat .count {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--liberty-mute);
+  }
+  .cat .arrow {
+    margin-top: 18px;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--liberty-green);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .cat .arrow .ar {
+    display: inline-block;
+    width: 28px; height: 1px;
+    background: var(--liberty-green);
+    transition: width 260ms var(--ease-soft);
+  }
+  .cat:hover .arrow .ar { width: 44px; }
+
+  .cat .motif {
+    width: 110px;
+    height: 140px;
+    flex-shrink: 0;
+    color: var(--liberty-green);
+    align-self: center;
+    justify-self: end;
+  }
+  .cat[data-cat="rosso"] .motif    { color: var(--liberty-burgundy); }
+  .cat[data-cat="bianco"] .motif   { color: var(--liberty-green-soft); }
+  .cat[data-cat="bollicine"] .motif{ color: var(--liberty-gold); }
+  .cat[data-cat="passiti"] .motif  { color: var(--liberty-gold-soft); }
+  .cat[data-cat="grappe"] .motif   { color: var(--liberty-green); }
+
+  /* Tap ripple */
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    background: rgba(36,79,59,.16);
+    animation: ripple 600ms var(--ease-soft);
+    pointer-events: none;
+    z-index: 0;
+  }
+  @keyframes ripple {
+    to { transform: scale(4); opacity: 0; }
+  }
+
+  .home-footer {
+    margin-top: 48px;
+    text-align: center;
+    color: var(--liberty-mute);
+    font-family: var(--font-ui);
+    font-style: italic;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+  }
+  .home-footer .small {
+    display: block;
+    font-style: normal;
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    margin-top: 6px;
+    color: var(--liberty-green);
+  }
+
+  /* ──────────────────────────────────────────
+     CATEGORY (View 2)
+     ────────────────────────────────────────── */
+  .cat-page { padding: 16px 20px 64px; }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0 18px;
+    position: sticky;
+    top: 0;
+    background: linear-gradient(var(--liberty-paper) 78%, rgba(245,239,227,0));
+    z-index: 10;
+    margin: 0 -20px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .back {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--liberty-green);
+    cursor: pointer;
+    padding: 12px 4px 12px 0;
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .back svg {
+    width: 18px; height: 18px;
+    transition: transform 260ms var(--ease-soft);
+  }
+  .back:hover svg { transform: translateX(-3px); }
+  .back:hover { color: var(--liberty-green-deep); }
+
+  .topbar .brandmark {
+    font-family: var(--font-script);
+    font-size: 28px;
+    color: var(--liberty-green);
+    line-height: 1;
+  }
+
+  .cat-head {
+    text-align: center;
+    padding: 8px 0 12px;
+  }
+  .cat-head .eyebrow {
+    font-family: var(--font-ui);
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--liberty-green);
+  }
+  .cat-head h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(36px, 9vw, 56px);
+    margin: 6px 0 4px;
+    color: var(--liberty-black);
+    letter-spacing: -0.012em;
+    line-height: 1.05;
+  }
+  .cat-head h2 em {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--liberty-green);
+  }
+  .cat-head .blurb {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    color: var(--liberty-ink);
+    font-size: 15px;
+    line-height: 1.55;
+    max-width: 420px;
+    margin: 10px auto 0;
+  }
+
+  /* Filters */
+  .filters {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 24px 0 8px;
+    padding: 14px;
+    background: var(--liberty-paper-cool);
+    box-shadow: inset 0 0 0 1px var(--liberty-line);
+  }
+  .filter {
+    flex: 1 1 calc(50% - 6px);
+    min-width: 140px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .filter label {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--liberty-green);
+  }
+  .select {
+    position: relative;
+  }
+  .select select {
+    appearance: none;
+    width: 100%;
+    min-height: 48px;
+    font-family: var(--font-ui);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--liberty-black);
+    background: var(--liberty-paper);
+    border: 0;
+    box-shadow: inset 0 0 0 1px var(--liberty-line);
+    border-radius: 4px;
+    padding: 10px 38px 10px 14px;
+    cursor: pointer;
+    transition: box-shadow 160ms var(--ease-soft);
+  }
+  .select select:focus {
+    outline: none;
+    box-shadow: inset 0 0 0 1.5px var(--liberty-green);
+  }
+  .select::after {
+    content: "";
+    position: absolute;
+    right: 14px; top: 50%;
+    width: 8px; height: 8px;
+    border-right: 1.5px solid var(--liberty-green);
+    border-bottom: 1.5px solid var(--liberty-green);
+    transform: translateY(-70%) rotate(45deg);
+    pointer-events: none;
+  }
+  .filter-meta {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--liberty-ink);
+    padding: 4px 2px 0;
+  }
+  .clear {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--liberty-green);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    padding: 6px 2px;
+    visibility: hidden;
+  }
+  .clear.show { visibility: visible; }
+
+  /* Wine list */
+  .regions {
+    margin-top: 8px;
+  }
+  .region {
+    padding: 28px 0 8px;
+  }
+  .region-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: var(--liberty-green);
+    margin-bottom: 18px;
+  }
+  .region-head .line {
+    flex: 1; height: 1px;
+    background: var(--liberty-green);
+    opacity: 0.35;
+  }
+  .region-head .label {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-style: italic;
+    font-size: 18px;
+    letter-spacing: 0.04em;
+    color: var(--liberty-green);
+  }
+  .region-head .dot {
+    width: 5px; height: 5px;
+    background: var(--liberty-gold);
+    transform: rotate(45deg);
+  }
+
+  .wine {
+    padding: 16px 4px;
+    border-bottom: 1px dotted var(--liberty-line);
+  }
+  .wine:last-child { border-bottom: 0; }
+  .wine .top {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: baseline;
+  }
+  .wine .name {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 19px;
+    line-height: 1.25;
+    color: var(--liberty-black);
+    margin: 0;
+    letter-spacing: 0.005em;
+  }
+  .wine .price {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 18px;
+    color: var(--liberty-green);
+    white-space: nowrap;
+  }
+  .wine .price .cur {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    color: var(--liberty-mute);
+    font-weight: 400;
+    margin-right: 2px;
+  }
+  .wine .price .unit {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--liberty-mute);
+    letter-spacing: 0.02em;
+  }
+  .wine .desc {
+    margin: 6px 0 0;
+    font-family: var(--font-sans);
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--liberty-ink);
+    max-width: 60ch;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .wine .meta {
+    margin-top: 8px;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--liberty-green);
+  }
+  .wine .meta .sep {
+    margin: 0 8px;
+    color: var(--liberty-tortora-deep);
+  }
+
+  .empty {
+    text-align: center;
+    padding: 48px 16px;
+    font-family: var(--font-ui);
+    font-style: italic;
+    color: var(--liberty-mute);
+  }
+  .empty .glyph {
+    font-family: var(--font-script);
+    font-size: 48px;
+    color: var(--liberty-green-soft);
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .colofone {
+    margin-top: 56px;
+    text-align: center;
+    color: var(--liberty-mute);
+    font-family: var(--font-ui);
+    font-style: italic;
+    font-size: 12px;
+  }
+  .colofone .small {
+    display: block;
+    font-style: normal;
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    margin-top: 6px;
+    color: var(--liberty-green);
+  }
+
+  /* — Tablet — */
+  @media (min-width: 720px) {
+    .home { padding: 56px 48px 80px; }
+    .cats { gap: 22px; }
+    .cat { min-height: 220px; padding: 36px 40px; }
+    .cat .row { grid-template-columns: 1fr 160px; min-height: 180px; }
+    .cat .motif { width: 160px; height: 200px; }
+    .cat-page { padding: 24px 48px 80px; }
+    .filters { padding: 18px; }
+    .filter { flex: 1 1 calc(33% - 8px); }
+    .wine { padding: 18px 6px; }
+    .wine .name { font-size: 21px; }
+    .wine .price { font-size: 20px; }
+    .wine .desc { font-size: 15px; line-height: 1.55; }
+  }
+
+  @media (min-width: 960px) {
+    .cats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; }
+    .cat { min-height: 360px; padding: 32px 28px; }
+    .cat .row { grid-template-columns: 1fr; grid-template-rows: 1fr auto; min-height: auto; }
+    .cat .motif { width: 140px; height: 170px; align-self: start; justify-self: center; }
+    .cat .arrow { margin-top: 20px; }
+  }
+
+  /* Print-ish niceties: avoid blue focus rings */
+  :focus-visible {
+    outline: 2px solid var(--liberty-green);
+    outline-offset: 3px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ───────── Reusable SVG defs (floral motifs) ───────── -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- Art Nouveau grape cluster + vine leaf (Vino Rosso) -->
+    <symbol id="motif-rosso" viewBox="0 0 110 140">
+      <g fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- whiplash stem -->
+        <path d="M55 6 C 48 22, 70 30, 56 46 C 44 60, 70 72, 58 88"/>
+        <!-- tendril curls -->
+        <path d="M58 88 C 50 96, 64 100, 56 108"/>
+        <path d="M30 36 C 22 44, 28 56, 22 60 C 18 64, 24 70, 20 74"/>
+        <!-- leaf left -->
+        <path d="M44 30 C 26 28, 14 42, 22 58 C 30 64, 44 60, 48 48 C 50 40, 48 32, 44 30 Z"/>
+        <path d="M44 30 L 28 50"/>
+        <path d="M34 36 L 30 56"/>
+        <path d="M40 40 L 36 60"/>
+        <!-- leaf right (smaller) -->
+        <path d="M70 50 C 84 50, 92 58, 88 70 C 82 78, 70 76, 68 66 C 66 58, 68 52, 70 50 Z"/>
+      </g>
+      <!-- grape cluster (filled translucent + outlines) -->
+      <g fill="currentColor" opacity="0.85">
+        <circle cx="50" cy="92" r="6.5"/>
+        <circle cx="62" cy="92" r="6.5"/>
+        <circle cx="44" cy="102" r="6.5"/>
+        <circle cx="56" cy="102" r="6.5"/>
+        <circle cx="68" cy="102" r="6.5"/>
+        <circle cx="50" cy="112" r="6.5"/>
+        <circle cx="62" cy="112" r="6.5"/>
+        <circle cx="56" cy="122" r="6.5"/>
+      </g>
+      <g fill="none" stroke="currentColor" stroke-width="0.9" opacity="0.5">
+        <circle cx="50" cy="92" r="6.5"/>
+        <circle cx="62" cy="92" r="6.5"/>
+        <circle cx="44" cy="102" r="6.5"/>
+        <circle cx="56" cy="102" r="6.5"/>
+        <circle cx="68" cy="102" r="6.5"/>
+        <circle cx="50" cy="112" r="6.5"/>
+        <circle cx="62" cy="112" r="6.5"/>
+        <circle cx="56" cy="122" r="6.5"/>
+      </g>
+    </symbol>
+
+    <!-- Art Nouveau iris / lily (Vino Bianco) -->
+    <symbol id="motif-bianco" viewBox="0 0 110 140">
+      <g fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- stem -->
+        <path d="M55 134 C 55 110, 50 92, 56 70 C 60 56, 52 44, 55 30"/>
+        <!-- leaves at base -->
+        <path d="M55 130 C 30 120, 22 96, 30 78 C 32 92, 44 110, 55 124"/>
+        <path d="M55 130 C 82 122, 90 100, 84 82 C 80 96, 68 112, 55 124"/>
+        <!-- iris petals (three pointing up + drooping sides) -->
+        <path d="M55 30 C 46 18, 40 8, 44 4 C 50 8, 54 18, 55 30 Z"/>
+        <path d="M55 30 C 64 18, 70 8, 66 4 C 60 8, 56 18, 55 30 Z"/>
+        <path d="M55 30 C 55 18, 55 8, 55 4"/>
+        <!-- side drooping petals (whiplash curve) -->
+        <path d="M44 32 C 30 36, 24 48, 28 58 C 36 52, 44 46, 50 38"/>
+        <path d="M66 32 C 80 36, 86 48, 82 58 C 74 52, 66 46, 60 38"/>
+        <!-- center stamens -->
+        <path d="M51 26 L 50 18"/>
+        <path d="M59 26 L 60 18"/>
+        <path d="M55 24 L 55 14"/>
+      </g>
+      <g fill="currentColor" opacity="0.7">
+        <circle cx="50" cy="17" r="1.6"/>
+        <circle cx="60" cy="17" r="1.6"/>
+        <circle cx="55" cy="13" r="1.6"/>
+      </g>
+    </symbol>
+
+    <!-- Art Nouveau chamomile + bubbles (Bollicine) -->
+    <symbol id="motif-bollicine" viewBox="0 0 110 140">
+      <g fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- rising stem with whiplash -->
+        <path d="M55 134 C 50 116, 64 102, 56 86 C 48 72, 60 60, 55 46"/>
+        <!-- small leaves -->
+        <path d="M55 120 C 42 116, 38 104, 44 98 C 48 104, 52 112, 55 120 Z"/>
+        <path d="M55 100 C 66 96, 70 86, 66 80 C 62 86, 58 92, 55 100 Z"/>
+        <!-- flower (star / chamomile) -->
+        <g transform="translate(55 38)">
+          <g id="petal-blade">
+            <path d="M0 0 C -3 -8, -3 -18, 0 -22 C 3 -18, 3 -8, 0 0 Z"/>
+          </g>
+          <use href="#petal-blade" transform="rotate(0)"/>
+          <use href="#petal-blade" transform="rotate(45)"/>
+          <use href="#petal-blade" transform="rotate(90)"/>
+          <use href="#petal-blade" transform="rotate(135)"/>
+          <use href="#petal-blade" transform="rotate(180)"/>
+          <use href="#petal-blade" transform="rotate(225)"/>
+          <use href="#petal-blade" transform="rotate(270)"/>
+          <use href="#petal-blade" transform="rotate(315)"/>
+        </g>
+        <circle cx="55" cy="38" r="4" fill="currentColor" opacity="0.85"/>
+      </g>
+      <!-- rising bubbles -->
+      <g fill="none" stroke="currentColor" stroke-width="1" opacity="0.8">
+        <circle cx="22" cy="88" r="3.2"/>
+        <circle cx="30" cy="72" r="2.2"/>
+        <circle cx="24" cy="58" r="2.6"/>
+        <circle cx="18" cy="42" r="1.8"/>
+        <circle cx="86" cy="92" r="2.8"/>
+        <circle cx="80" cy="76" r="2"/>
+        <circle cx="90" cy="62" r="2.4"/>
+        <circle cx="84" cy="48" r="1.6"/>
+      </g>
+    </symbol>
+
+    <!-- Art Nouveau radiant sun + appassimento cluster (Passiti) -->
+    <symbol id="motif-passiti" viewBox="0 0 110 140">
+      <!-- radiant sun -->
+      <g fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+        <g transform="translate(55 36)">
+          <circle cx="0" cy="0" r="13"/>
+          <g opacity="0.85">
+            <path d="M0 -19 L0 -27"/>
+            <path d="M13 -13 L19 -19"/>
+            <path d="M19 0 L27 0"/>
+            <path d="M13 13 L19 19"/>
+            <path d="M-13 -13 L-19 -19"/>
+            <path d="M-19 0 L-27 0"/>
+            <path d="M-13 13 L-19 19"/>
+          </g>
+        </g>
+        <!-- whiplash stem down to cluster -->
+        <path d="M55 50 C 50 60, 62 66, 56 76"/>
+        <!-- vine leaf -->
+        <path d="M56 72 C 40 70, 30 80, 36 92 C 44 96, 56 92, 58 82 C 59 76, 58 73, 56 72 Z"/>
+        <path d="M56 72 L 42 86"/>
+      </g>
+      <!-- appassimento grape cluster (raisined: smaller, slightly irregular) -->
+      <g fill="currentColor" opacity="0.8">
+        <circle cx="58" cy="92" r="5.6"/>
+        <circle cx="69" cy="94" r="5"/>
+        <circle cx="52" cy="102" r="5.4"/>
+        <circle cx="63" cy="103" r="5.2"/>
+        <circle cx="74" cy="104" r="4.6"/>
+        <circle cx="58" cy="112" r="5"/>
+        <circle cx="69" cy="113" r="4.8"/>
+        <circle cx="63" cy="122" r="4.6"/>
+      </g>
+      <g fill="none" stroke="currentColor" stroke-width="0.9" opacity="0.45">
+        <circle cx="58" cy="92" r="5.6"/>
+        <circle cx="69" cy="94" r="5"/>
+        <circle cx="52" cy="102" r="5.4"/>
+        <circle cx="63" cy="103" r="5.2"/>
+        <circle cx="74" cy="104" r="4.6"/>
+        <circle cx="58" cy="112" r="5"/>
+        <circle cx="69" cy="113" r="4.8"/>
+        <circle cx="63" cy="122" r="4.6"/>
+      </g>
+    </symbol>
+
+    <!-- Art Nouveau juniper sprig (Grappe) -->
+    <symbol id="motif-grappe" viewBox="0 0 110 140">
+      <g fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- central whiplash stem -->
+        <path d="M55 134 C 52 112, 60 96, 55 78 C 51 62, 58 48, 55 28"/>
+        <!-- needle pairs (juniper foliage) -->
+        <path d="M55 118 L 40 110"/><path d="M55 118 L 41 124"/>
+        <path d="M55 104 L 71 96"/><path d="M55 104 L 70 110"/>
+        <path d="M55 90 L 39 82"/><path d="M55 90 L 40 96"/>
+        <path d="M55 76 L 71 68"/><path d="M55 76 L 70 82"/>
+        <path d="M55 62 L 41 54"/><path d="M55 62 L 42 68"/>
+        <path d="M55 48 L 69 40"/><path d="M55 48 L 68 54"/>
+        <!-- crowning sprig tips -->
+        <path d="M55 28 C 50 20, 46 12, 49 8"/>
+        <path d="M55 28 C 60 20, 64 12, 61 8"/>
+        <path d="M55 28 L 55 10"/>
+      </g>
+      <!-- juniper berries -->
+      <g fill="currentColor" opacity="0.85">
+        <circle cx="44" cy="112" r="3.4"/>
+        <circle cx="67" cy="98" r="3.2"/>
+        <circle cx="43" cy="84" r="3"/>
+        <circle cx="68" cy="70" r="3.2"/>
+        <circle cx="45" cy="56" r="2.8"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<main class="app">
+
+  <!-- ═════════════ VIEW 1 · HOME ═════════════ -->
+  <section class="view active" id="view-home" data-screen-label="01 Home · Carta">
+    <div class="home">
+      <header class="masthead">
+        <p class="mono">Cafè Liberty</p>
+        <span class="eyebrow">Caffè · Ristorante · Wine Bar · Albinea</span>
+        <h1>Carta dei <em>Vini</em></h1>
+        <p class="sub">Una selezione dal territorio e dalle colline d'Italia</p>
+      </header>
+
+      <div class="divider" aria-hidden="true">
+        <span class="line"></span>
+        <span class="dot"></span>
+        <span class="glyph">L</span>
+        <span class="dot"></span>
+        <span class="line"></span>
+      </div>
+
+      <div class="cats">
+        <button class="cat" type="button" data-cat="bollicine">
+          <div class="row">
+            <div>
+              <div class="label">Categoria · I</div>
+              <h2 class="name"><em>Bollicine</em></h2>
+              <p class="count" id="count-bollicine">— metodo classico & charmat</p>
+              <span class="arrow">scopri la selezione <span class="ar"></span></span>
+            </div>
+            <svg class="motif" aria-hidden="true"><use href="#motif-bollicine"/></svg>
+          </div>
+        </button>
+
+        <button class="cat" type="button" data-cat="bianco">
+          <div class="row">
+            <div>
+              <div class="label">Categoria · II</div>
+              <h2 class="name">Vino <em>Bianco</em></h2>
+              <p class="count" id="count-bianco">— vini fermi · 5 regioni</p>
+              <span class="arrow">scopri la selezione <span class="ar"></span></span>
+            </div>
+            <svg class="motif" aria-hidden="true"><use href="#motif-bianco"/></svg>
+          </div>
+        </button>
+
+        <button class="cat" type="button" data-cat="rosso">
+          <div class="row">
+            <div>
+              <div class="label">Categoria · III</div>
+              <h2 class="name">Vino <em>Rosso</em></h2>
+              <p class="count" id="count-rosso">— vini fermi · 6 regioni</p>
+              <span class="arrow">scopri la selezione <span class="ar"></span></span>
+            </div>
+            <svg class="motif" aria-hidden="true"><use href="#motif-rosso"/></svg>
+          </div>
+        </button>
+
+        <button class="cat" type="button" data-cat="passiti">
+          <div class="row">
+            <div>
+              <div class="label">Categoria · IV</div>
+              <h2 class="name"><em>Passiti</em> &amp; Dolci</h2>
+              <p class="count" id="count-passiti">— vini da meditazione</p>
+              <span class="arrow">scopri la selezione <span class="ar"></span></span>
+            </div>
+            <svg class="motif" aria-hidden="true"><use href="#motif-passiti"/></svg>
+          </div>
+        </button>
+
+        <button class="cat" type="button" data-cat="grappe">
+          <div class="row">
+            <div>
+              <div class="label">Categoria · V</div>
+              <h2 class="name"><em>Grappe</em> &amp; Distillati</h2>
+              <p class="count" id="count-grappe">— da fine pasto</p>
+              <span class="arrow">scopri la selezione <span class="ar"></span></span>
+            </div>
+            <svg class="motif" aria-hidden="true"><use href="#motif-grappe"/></svg>
+          </div>
+        </button>
+      </div>
+
+      <p class="home-footer">
+        Barbara &amp; Sebastiano vi accompagnano nella scelta
+        <span class="small">Chiamateci · 0522 599929</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- ═════════════ VIEW 2 · CATEGORY ═════════════ -->
+  <section class="view" id="view-category" data-screen-label="02 Categoria · lista vini">
+    <div class="cat-page">
+      <div class="topbar">
+        <button class="back" type="button" id="btn-back" aria-label="Torna alla carta">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M15 6 L 9 12 L 15 18"/>
+          </svg>
+          <span>carta</span>
+        </button>
+        <span class="brandmark" aria-hidden="true">Liberty</span>
+      </div>
+
+      <div class="cat-head">
+        <div class="eyebrow" id="cat-eyebrow">Categoria</div>
+        <h2 id="cat-title">Vino <em>Rosso</em></h2>
+        <p class="blurb" id="cat-blurb">Sangiovese, Nebbiolo, Corvina e blend: una scelta dal Nord al Sud.</p>
+      </div>
+
+      <div class="divider" aria-hidden="true">
+        <span class="line"></span>
+        <span class="dot"></span>
+        <span class="glyph">L</span>
+        <span class="dot"></span>
+        <span class="line"></span>
+      </div>
+
+      <div class="filters" role="region" aria-label="Filtri">
+        <div class="filter">
+          <label for="f-tipologia">Tipologia</label>
+          <div class="select">
+            <select id="f-tipologia" aria-label="Filtra per tipologia">
+              <option value="">Tutte le tipologie</option>
+            </select>
+          </div>
+        </div>
+        <div class="filter">
+          <label for="f-regione">Regione di provenienza</label>
+          <div class="select">
+            <select id="f-regione" aria-label="Filtra per regione">
+              <option value="">Tutte le regioni</option>
+            </select>
+          </div>
+        </div>
+        <div class="filter-meta">
+          <span id="result-count">— etichette</span>
+          <button class="clear" id="btn-clear" type="button">azzera filtri</button>
+        </div>
+      </div>
+
+      <div class="regions" id="regions"></div>
+
+      <p class="colofone">
+        I prezzi sono espressi in euro · servizio al calice disponibile su richiesta
+        <span class="small">Cafè Liberty · Albinea</span>
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<!-- AGGIUNTO — Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+/* ───────────────────────────────────────────────────
+   Carta dei Vini · data + interactions
+   ─────────────────────────────────────────────────── */
+
+// AGGIUNTO — Supabase client
+const SUPABASE_URL = 'https://cbheuxniumykzowkmims.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNiaGV1eG5pdW15a3pvd2ttaW1zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwMDU3NDYsImV4cCI6MjA5NTU4MTc0Nn0.lC1Bjyk8T0w6xYb7Qr7ip6STypW7IYDAXo12o9lAJ0Y';
+const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const WINES = {
+  rosso: {
+    title: 'Vino <em>Rosso</em>',
+    blurb: 'Sangiovese, Nebbiolo, Corvina e blend: una scelta dal Nord al Sud.',
+    eyebrow: 'Categoria · I · Rossi',
+    list: [
+      // Toscana
+      { region: 'Toscana', type: 'Sangiovese',
+        name: 'Chianti Classico Riserva',
+        desc: 'sangiovese in purezza, frutti rossi maturi e tabacco; 24 mesi in botte grande.',
+        price: 38 },
+      { region: 'Toscana', type: 'Sangiovese',
+        name: 'Brunello di Montalcino',
+        desc: 'austero ed elegante, ciliegia, cuoio e spezie dolci; affinamento 36 mesi.',
+        price: 72 },
+      { region: 'Toscana', type: 'Cabernet & Blend',
+        name: 'Bolgheri Superiore',
+        desc: 'cabernet, merlot e petit verdot; potente, balsamico, di lungo respiro.',
+        price: 58 },
+
+      // Piemonte
+      { region: 'Piemonte', type: 'Nebbiolo',
+        name: 'Barolo "Vigna delle Rose"',
+        desc: 'nebbiolo da Serralunga, rosa appassita, liquirizia e tartufo.',
+        price: 68 },
+      { region: 'Piemonte', type: 'Nebbiolo',
+        name: 'Barbaresco Asili',
+        desc: 'più aggraziato del Barolo, frutta rossa croccante e fiori secchi.',
+        price: 62 },
+      { region: 'Piemonte', type: 'Barbera',
+        name: 'Barbera d\'Alba Superiore',
+        desc: 'fresca e succosa, prugna, viola e una bella spina acida.',
+        price: 28 },
+
+      // Veneto
+      { region: 'Veneto', type: 'Corvina & Blend',
+        name: 'Amarone della Valpolicella',
+        desc: 'corvina e rondinella appassite, amarena sotto spirito, cacao amaro.',
+        price: 65 },
+      { region: 'Veneto', type: 'Corvina & Blend',
+        name: 'Valpolicella Ripasso',
+        desc: 'il "piccolo Amarone": morbido, speziato, di grande beva.',
+        price: 26 },
+
+      // Emilia-Romagna
+      { region: 'Emilia-Romagna', type: 'Lambrusco',
+        name: 'Lambrusco Grasparossa di Castelvetro',
+        desc: 'frizzante secco, mora e violetta; il compagno ideale dei salumi reggiani.',
+        price: 18 },
+      { region: 'Emilia-Romagna', type: 'Sangiovese',
+        name: 'Sangiovese di Romagna Riserva',
+        desc: 'caldo e fragrante, ciliegia matura e una leggera nota terrosa.',
+        price: 22 },
+
+      // Sicilia
+      { region: 'Sicilia', type: 'Nero d\'Avola & Blend',
+        name: 'Nero d\'Avola "Saia"',
+        desc: 'frutto solare, prugna nera, tabacco dolce e una vena minerale.',
+        price: 32 },
+      { region: 'Sicilia', type: 'Nero d\'Avola & Blend',
+        name: 'Etna Rosso',
+        desc: 'nerello mascalese dalle vigne di altura, etereo e vibrante.',
+        price: 36 },
+
+      // Puglia
+      { region: 'Puglia', type: 'Primitivo',
+        name: 'Primitivo di Manduria',
+        desc: 'caldo e generoso, marmellata di mora, cacao e liquirizia.',
+        price: 24 },
+    ],
+  },
+
+  bianco: {
+    title: 'Vino <em>Bianco</em>',
+    blurb: 'Dalle alture friulane alla brezza del Tirreno: freschi, sapidi, longevi.',
+    eyebrow: 'Categoria · II · Bianchi',
+    list: [
+      // Friuli-Venezia Giulia
+      { region: 'Friuli-Venezia Giulia', type: 'Sauvignon',
+        name: 'Sauvignon Collio',
+        desc: 'sambuco, salvia e pompelmo rosa; tagliente e di grande precisione.',
+        price: 32 },
+      { region: 'Friuli-Venezia Giulia', type: 'Friulano',
+        name: 'Friulano "Ronco delle Acacie"',
+        desc: 'fiore di acacia, mandorla amara e una sapidità marina.',
+        price: 28 },
+      { region: 'Friuli-Venezia Giulia', type: 'Ribolla Gialla',
+        name: 'Ribolla Gialla',
+        desc: 'agrumi, erbe aromatiche e una bella tensione minerale.',
+        price: 26 },
+
+      // Marche
+      { region: 'Marche', type: 'Verdicchio',
+        name: 'Verdicchio dei Castelli di Jesi Classico',
+        desc: 'mela verde, mandorla e una chiusura ammandorlata caratteristica.',
+        price: 22 },
+      { region: 'Marche', type: 'Verdicchio',
+        name: 'Verdicchio di Matelica Riserva',
+        desc: 'più strutturato, miele, frutta gialla matura, ottimo invecchiamento.',
+        price: 30 },
+
+      // Campania
+      { region: 'Campania', type: 'Fiano',
+        name: 'Fiano di Avellino',
+        desc: 'nocciola tostata, pera e una sapidità vulcanica che invita al sorso.',
+        price: 28 },
+      { region: 'Campania', type: 'Greco',
+        name: 'Greco di Tufo',
+        desc: 'pesca bianca, zenzero e una grande spina acida; di lunga durata.',
+        price: 26 },
+      { region: 'Campania', type: 'Falanghina',
+        name: 'Falanghina del Sannio',
+        desc: 'fresca e immediata, frutta a polpa bianca e fiori di campo.',
+        price: 20 },
+
+      // Trentino-Alto Adige
+      { region: 'Trentino-Alto Adige', type: 'Chardonnay',
+        name: 'Chardonnay "Löwengang"',
+        desc: 'parzialmente affinato in legno, burro fresco, ananas e vaniglia.',
+        price: 42 },
+      { region: 'Trentino-Alto Adige', type: 'Pinot Bianco',
+        name: 'Pinot Bianco Alto Adige',
+        desc: 'discreto ed elegante, pera Williams e mandorla bianca.',
+        price: 24 },
+
+      // Sardegna
+      { region: 'Sardegna', type: 'Vermentino',
+        name: 'Vermentino di Gallura Superiore',
+        desc: 'agrumi maturi, macchia mediterranea e una nota iodata.',
+        price: 26 },
+      { region: 'Sardegna', type: 'Vermentino',
+        name: 'Vermentino "Cala Reale"',
+        desc: 'pompelmo, salvia ed eucalipto; perfetto sui crudi di mare.',
+        price: 22 },
+    ],
+  },
+
+  bollicine: {
+    title: '<em>Bollicine</em>',
+    blurb: 'Metodo classico italiano e d\'oltralpe, charmat di territorio e cuvée rosé.',
+    eyebrow: 'Categoria · III · Spumanti',
+    list: [
+      // Lombardia (Franciacorta)
+      { region: 'Lombardia', type: 'Metodo Classico',
+        name: 'Franciacorta Brut',
+        desc: 'chardonnay e pinot nero, crosta di pane, mela renetta; perlage finissimo.',
+        price: 48 },
+      { region: 'Lombardia', type: 'Metodo Classico',
+        name: 'Franciacorta Satèn',
+        desc: 'pressione ridotta, cremoso e setoso; pesca bianca e nocciola.',
+        price: 52 },
+      { region: 'Lombardia', type: 'Metodo Classico',
+        name: 'Franciacorta Rosé Millesimato',
+        desc: 'piccoli frutti rossi, lievito, rosa canina; gastronomico.',
+        price: 58 },
+
+      // Trentino
+      { region: 'Trentino', type: 'Metodo Classico',
+        name: 'Trento DOC Brut',
+        desc: 'chardonnay di montagna, agrumi, mela e una spina acida cristallina.',
+        price: 42 },
+      { region: 'Trentino', type: 'Metodo Classico',
+        name: 'Trento DOC Riserva',
+        desc: '60 mesi sui lieviti, crosta di pane, mandorla e miele d\'acacia.',
+        price: 65 },
+
+      // Veneto / Friuli (Prosecco & Charmat)
+      { region: 'Veneto', type: 'Charmat',
+        name: 'Prosecco Superiore Conegliano',
+        desc: 'glera in purezza, pera, glicine e una bollicina vivace.',
+        price: 22 },
+      { region: 'Veneto', type: 'Charmat',
+        name: 'Valdobbiadene Cartizze Dry',
+        desc: 'dalle colline più ripide; floreale, dolce di frutta, mai stucchevole.',
+        price: 32 },
+      { region: 'Veneto', type: 'Charmat',
+        name: 'Prosecco Rosé Millesimato',
+        desc: 'glera e pinot nero, fragolina di bosco e crosta di pane.',
+        price: 24 },
+
+      // Emilia-Romagna
+      { region: 'Emilia-Romagna', type: 'Charmat',
+        name: 'Pignoletto Brut Colli Bolognesi',
+        desc: 'grechetto gentile, fiori bianchi, agrumi; un classico di territorio.',
+        price: 18 },
+      { region: 'Emilia-Romagna', type: 'Metodo Ancestrale',
+        name: 'Lambrusco Ancestrale Rosato',
+        desc: 'rifermentato in bottiglia, leggermente torbido, salumi e tigelle.',
+        price: 20 },
+
+      // Champagne
+      { region: 'Champagne', type: 'Metodo Classico',
+        name: 'Champagne Brut Sans Année',
+        desc: 'cuvée pinot meunier, chardonnay, pinot nero; mela, brioche, mandorla.',
+        price: 78 },
+      { region: 'Champagne', type: 'Metodo Classico',
+        name: 'Champagne Blanc de Blancs',
+        desc: 'chardonnay in purezza, gesso, cedro e crosta di pane; lunghissimo.',
+        price: 95 },
+      { region: 'Champagne', type: 'Metodo Classico',
+        name: 'Champagne Rosé Grand Cru',
+        desc: 'lampone, melagrana e una vena minerale; perlage seta.',
+        price: 110 },
+    ],
+  },
+
+  passiti: {
+    title: '<em>Passiti</em> &amp; Dolci',
+    blurb: 'Vini da meditazione e fine pasto: appassimento, muffa nobile e Vin Santo.',
+    eyebrow: 'Categoria · IV · Da dessert',
+    list: [
+      // Sicilia
+      { region: 'Sicilia', type: 'Zibibbo',
+        name: 'Passito di Pantelleria',
+        desc: 'zibibbo appassito al sole, albicocca disidratata, miele e zafferano.',
+        price: 9, glass: true },
+      { region: 'Sicilia', type: 'Malvasia',
+        name: 'Malvasia delle Lipari',
+        desc: 'fico secco, scorza d\'arancia candita e una vena salina vulcanica.',
+        price: 8, glass: true },
+
+      // Veneto
+      { region: 'Veneto', type: 'Recioto',
+        name: 'Recioto della Valpolicella',
+        desc: 'corvina appassita, amarena sotto spirito e cioccolato fondente.',
+        price: 10, glass: true },
+      { region: 'Veneto', type: 'Recioto',
+        name: 'Recioto di Soave',
+        desc: 'garganega appassita, miele d\'acacia, pesca sciroppata e mandorla.',
+        price: 9, glass: true },
+
+      // Toscana
+      { region: 'Toscana', type: 'Vin Santo',
+        name: 'Vin Santo del Chianti',
+        desc: 'trebbiano e malvasia in caratelli, noce, fichi e crema pasticcera.',
+        price: 8, glass: true },
+      { region: 'Toscana', type: 'Vin Santo',
+        name: 'Vin Santo Occhio di Pernice',
+        desc: 'da uve rosse, datteri, caramello e scorza d\'arancia; raro e prezioso.',
+        price: 12, glass: true },
+
+      // Friuli-Venezia Giulia
+      { region: 'Friuli-Venezia Giulia', type: 'Picolit',
+        name: 'Colli Orientali Picolit',
+        desc: 'fiori di campo, albicocca e miele; finezza ed eleganza assolute.',
+        price: 14, glass: true },
+
+      // Emilia-Romagna
+      { region: 'Emilia-Romagna', type: 'Albana',
+        name: 'Albana di Romagna Passito',
+        desc: 'albicocca, miele di castagno e una nota di erbe officinali.',
+        price: 8, glass: true },
+
+      // Francia
+      { region: 'Francia', type: 'Muffa Nobile',
+        name: 'Sauternes',
+        desc: 'sémillon da botrytis, frutta gialla candita, zafferano e miele.',
+        price: 16, glass: true },
+    ],
+  },
+
+  grappe: {
+    title: '<em>Grappe</em> &amp; Distillati',
+    blurb: 'Distillati artigianali da fine pasto: grappe, acquaviti e amari di territorio.',
+    eyebrow: 'Categoria · V · Da fine pasto',
+    list: [
+      // Veneto
+      { region: 'Veneto', type: 'Grappa Barricata',
+        name: 'Grappa di Amarone Barrique',
+        desc: 'invecchiata in legno, vaniglia, tabacco dolce e frutta sotto spirito.',
+        price: 9, glass: true },
+      { region: 'Veneto', type: 'Grappa Giovane',
+        name: 'Grappa di Prosecco',
+        desc: 'cristallina e floreale, pera e fiori bianchi; delicata e pulita.',
+        price: 6, glass: true },
+
+      // Piemonte
+      { region: 'Piemonte', type: 'Grappa Barricata',
+        name: 'Grappa di Barolo Riserva',
+        desc: 'lungo affinamento, liquirizia, cuoio e spezie; calda e avvolgente.',
+        price: 11, glass: true },
+      { region: 'Piemonte', type: 'Grappa Giovane',
+        name: 'Grappa di Moscato',
+        desc: 'aromatica e dolce di profumo, salvia, uva e zagara.',
+        price: 7, glass: true },
+
+      // Friuli-Venezia Giulia
+      { region: 'Friuli-Venezia Giulia', type: 'Grappa Monovitigno',
+        name: 'Grappa di Picolit',
+        desc: 'fine ed elegante, miele, albicocca e fiori di campo.',
+        price: 10, glass: true },
+      { region: 'Friuli-Venezia Giulia', type: 'Acquavite',
+        name: 'Acquavite di Pere Williams',
+        desc: 'distillato di frutta, pera matura intensa e succosa.',
+        price: 8, glass: true },
+
+      // Trentino-Alto Adige
+      { region: 'Trentino-Alto Adige', type: 'Grappa Aromatica',
+        name: 'Grappa di Gewürztraminer',
+        desc: 'profumatissima, rosa, litchi e spezie dolci; un classico di montagna.',
+        price: 8, glass: true },
+
+      // Emilia-Romagna
+      { region: 'Emilia-Romagna', type: 'Nocino',
+        name: 'Nocino di Modena',
+        desc: 'liquore di noci verdi, chiodi di garofano e cannella; tradizione di casa.',
+        price: 6, glass: true },
+      { region: 'Emilia-Romagna', type: 'Amaro',
+        name: 'Amaro alle Erbe delle Colline',
+        desc: 'genziana, china e erbe officinali reggiane; equilibrio amaro-dolce.',
+        price: 6, glass: true },
+    ],
+  },
+};
+
+// AGGIUNTO — Svuota dati statici, verranno caricati da Supabase
+Object.keys(WINES).forEach(k => { WINES[k].list = []; });
+
+// AGGIUNTO — Fetch vini da Supabase
+async function fetchWinesFromSupabase() {
+  try {
+    const { data, error } = await _supabase.from('vini').select('*');
+    if (error) throw error;
+    Object.keys(WINES).forEach(k => { WINES[k].list = []; });
+    for (const row of data) {
+      const cat = row.categoria;
+      if (WINES[cat]) {
+        WINES[cat].list.push({
+          region: row.regione,
+          type: row.tipologia || '',
+          name: row.nome,
+          desc: row.descrizione || '',
+          price: Number(row.prezzo),
+          glass: row.al_calice || false,
+          produttore: row.produttore || '',
+          annata: row.annata || null,
+        });
+      }
+    }
+    return true;
+  } catch (e) {
+    console.error('Errore caricamento Supabase:', e);
+    return false;
+  }
+}
+
+/* ────── Helpers ────── */
+const $ = (s, root = document) => root.querySelector(s);
+const $$ = (s, root = document) => Array.from(root.querySelectorAll(s));
+
+const REGION_ORDER = [
+  'Trentino-Alto Adige', 'Trentino', 'Friuli-Venezia Giulia', 'Lombardia',
+  'Veneto', 'Piemonte', 'Emilia-Romagna', 'Toscana', 'Marche',
+  'Campania', 'Puglia', 'Sicilia', 'Sardegna', 'Champagne', 'Francia',
+];
+const regionRank = (r) => {
+  const i = REGION_ORDER.indexOf(r);
+  return i === -1 ? 999 : i;
+};
+
+/* ────── State ────── */
+let state = {
+  view: 'home',
+  category: null,
+  filters: { tipologia: '', regione: '' },
+};
+
+/* ────── Counts on home cards ────── */
+function updateHomeCounts() {
+  for (const key of ['bollicine', 'bianco', 'rosso', 'passiti', 'grappe']) {
+    const wines = WINES[key].list;
+    const regions = new Set(wines.map(w => w.region));
+    const el = $(`#count-${key}`);
+    if (!el) continue;
+    const suffix = (key === 'passiti' || key === 'grappe')
+      ? `${wines.length} etichette · servizio al calice`
+      : `${wines.length} etichette · ${regions.size} territori`;
+    el.textContent = '— ' + suffix;
+  }
+}
+
+/* ────── Navigation ────── */
+function go(view, cat = null) {
+  state.view = view;
+  state.category = cat;
+  $$('.view').forEach(v => v.classList.remove('active'));
+  if (view === 'home') {
+    $('#view-home').classList.add('active');
+    history.replaceState({ view: 'home' }, '', '#home');
+  } else if (view === 'category' && cat) {
+    $('#view-category').classList.add('active');
+    renderCategory(cat);
+    history.replaceState({ view: 'category', cat }, '', `#${cat}`);
+  }
+  window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+}
+
+/* ────── Filters: populate selects ────── */
+function populateFilters(catKey) {
+  const data = WINES[catKey].list;
+  const tipologie = Array.from(new Set(data.map(w => w.type))).sort();
+  const regioni = Array.from(new Set(data.map(w => w.region)))
+    .sort((a, b) => regionRank(a) - regionRank(b));
+
+  const tipSel = $('#f-tipologia');
+  tipSel.innerHTML = '<option value="">Tutte le tipologie</option>'
+    + tipologie.map(t => `<option value="${t}">${t}</option>`).join('');
+  const regSel = $('#f-regione');
+  regSel.innerHTML = '<option value="">Tutte le regioni</option>'
+    + regioni.map(r => `<option value="${r}">${r}</option>`).join('');
+
+  // reset state
+  state.filters = { tipologia: '', regione: '' };
+  tipSel.value = '';
+  regSel.value = '';
+  $('#btn-clear').classList.remove('show');
+}
+
+/* ────── Render ────── */
+function renderCategory(catKey) {
+  const data = WINES[catKey];
+  $('#cat-eyebrow').textContent = data.eyebrow;
+  $('#cat-title').innerHTML = data.title;
+  $('#cat-blurb').textContent = data.blurb;
+
+  populateFilters(catKey);
+  renderList();
+}
+
+function renderList() {
+  const catKey = state.category;
+  if (!catKey) return;
+  const { tipologia, regione } = state.filters;
+  const all = WINES[catKey].list;
+  const filtered = all.filter(w => {
+    if (tipologia && w.type !== tipologia) return false;
+    if (regione && w.region !== regione) return false;
+    return true;
+  });
+
+  // group by region
+  const byRegion = new Map();
+  for (const w of filtered) {
+    if (!byRegion.has(w.region)) byRegion.set(w.region, []);
+    byRegion.get(w.region).push(w);
+  }
+  const orderedRegions = Array.from(byRegion.keys())
+    .sort((a, b) => regionRank(a) - regionRank(b));
+
+  const wrap = $('#regions');
+  if (filtered.length === 0) {
+    wrap.innerHTML = `
+      <div class="empty">
+        <span class="glyph">∅</span>
+        Nessuna etichetta corrisponde ai filtri scelti.<br>
+        Provate ad ampliare la ricerca.
+      </div>`;
+  } else {
+    wrap.innerHTML = orderedRegions.map(r => `
+      <div class="region">
+        <div class="region-head">
+          <span class="line"></span>
+          <span class="dot"></span>
+          <span class="label">${r}</span>
+          <span class="dot"></span>
+          <span class="line"></span>
+        </div>
+        ${byRegion.get(r).map(w => `
+          <div class="wine">
+            <div class="top">
+              <h3 class="name">${escapeHtml(w.name)}</h3>
+              <div class="price"><span class="cur">€</span>${w.price}${w.glass ? '<span class="unit"> / calice</span>' : ''}</div>
+            </div>
+            <p class="desc">${escapeHtml(w.desc)}</p>
+            <div class="meta">${escapeHtml(w.type)}${w.produttore ? ' <span class="sep">·</span> ' + escapeHtml(w.produttore) : ''} <span class="sep">·</span> ${escapeHtml(w.region)}${w.annata ? ' <span class="sep">·</span> ' + w.annata : ''}</div>
+          </div>
+        `).join('')}
+      </div>
+    `).join('');
+  }
+
+  // result meta
+  const n = filtered.length;
+  $('#result-count').textContent = n === 0
+    ? 'nessuna etichetta'
+    : (n === 1 ? '1 etichetta' : `${n} etichette · ${orderedRegions.length} ${orderedRegions.length === 1 ? 'territorio' : 'territori'}`);
+
+  const anyFilter = !!(state.filters.tipologia || state.filters.regione);
+  $('#btn-clear').classList.toggle('show', anyFilter);
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+/* ────── Ripple ────── */
+function addRipple(e, el) {
+  const rect = el.getBoundingClientRect();
+  const x = (e.touches?.[0]?.clientX ?? e.clientX) - rect.left;
+  const y = (e.touches?.[0]?.clientY ?? e.clientY) - rect.top;
+  if (Number.isNaN(x)) return;
+  const size = Math.max(rect.width, rect.height);
+  const r = document.createElement('span');
+  r.className = 'ripple';
+  r.style.width = r.style.height = size + 'px';
+  r.style.left = (x - size / 2) + 'px';
+  r.style.top  = (y - size / 2) + 'px';
+  el.appendChild(r);
+  setTimeout(() => r.remove(), 650);
+}
+
+/* ────── Wire up ────── */
+document.addEventListener('DOMContentLoaded', async () => {
+  // AGGIUNTO — Carica vini da Supabase prima del rendering
+  const ok = await fetchWinesFromSupabase();
+  if (!ok) {
+    document.querySelector('.home-footer').insertAdjacentHTML('beforebegin',
+      '<p class="empty" style="padding:24px 16px"><span class="glyph">!</span>Impossibile caricare la carta dei vini.<br>Verifica la connessione e riprova.</p>');
+  }
+  updateHomeCounts();
+
+  // Category cards
+  $$('.cat').forEach(card => {
+    card.addEventListener('click', (e) => {
+      addRipple(e, card);
+      const cat = card.dataset.cat;
+      setTimeout(() => go('category', cat), 120);
+    });
+  });
+
+  $('#btn-back').addEventListener('click', () => go('home'));
+
+  $('#f-tipologia').addEventListener('change', (e) => {
+    state.filters.tipologia = e.target.value;
+    renderList();
+  });
+  $('#f-regione').addEventListener('change', (e) => {
+    state.filters.regione = e.target.value;
+    renderList();
+  });
+  $('#btn-clear').addEventListener('click', () => {
+    state.filters = { tipologia: '', regione: '' };
+    $('#f-tipologia').value = '';
+    $('#f-regione').value = '';
+    renderList();
+  });
+
+  // Initial route from hash (for refresh persistence)
+  const hash = (location.hash || '').replace('#', '');
+  if (['bollicine', 'bianco', 'rosso', 'passiti', 'grappe'].includes(hash)) {
+    go('category', hash);
+  } else {
+    go('home');
+  }
+});
+</script>
+</body>
+</html>
