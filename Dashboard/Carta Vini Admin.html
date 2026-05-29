@@ -444,10 +444,11 @@
     position: relative;
   }
   .price-input input { padding-left: 26px; }
-  .price-input::before {
+  .price-input::before { /* AGGIUNTO — fix allineamento verticale € */
     content: "€";
-    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    position: absolute; left: 12px; top: auto; bottom: 11px;
     color: var(--mute); font-weight: 500;
+    line-height: 1.5;
   }
 
   .form-actions {
@@ -544,20 +545,38 @@
     <h1 class="login-title">Carta Vini</h1>
     <p class="login-sub">Accesso amministrazione · Cafè Liberty</p>
 
-    <form id="login-form" class="login-form" autocomplete="on" novalidate>
-      <div>
-        <label for="login-email">Email</label>
-        <input id="login-email" type="email" autocomplete="username" placeholder="nome@ristorante.com" required />
-      </div>
-      <div>
-        <label for="login-pass">Password</label>
-        <input id="login-pass" type="password" autocomplete="current-password" placeholder="••••••••" required />
-      </div>
-      <div id="login-error" class="login-error">Credenziali non valide. Riprova.</div>
-      <button type="submit" class="btn btn-primary">Accedi</button>
-    </form>
+    <!-- AGGIUNTO — Login mode con password dimenticata -->
+    <div id="login-mode">
+      <form id="login-form" class="login-form" autocomplete="on" novalidate>
+        <div>
+          <label for="login-email">Email</label>
+          <input id="login-email" type="email" autocomplete="username" placeholder="nome@ristorante.com" required />
+        </div>
+        <div>
+          <label for="login-pass">Password</label>
+          <input id="login-pass" type="password" autocomplete="current-password" placeholder="••••••••" required />
+        </div>
+        <div id="login-error" class="login-error">Credenziali non valide. Riprova.</div>
+        <button type="submit" class="btn btn-primary">Accedi</button>
+      </form>
+      <button type="button" id="forgot-link" class="btn-link" style="display:block;text-align:center;margin-top:14px;font-size:13px">Password dimenticata?</button>
+    </div>
 
-    <p class="login-foot">v1.0 · interno</p>
+    <!-- AGGIUNTO — Modalità recupero password -->
+    <div id="forgot-mode" style="display:none">
+      <p style="text-align:center;font-size:14px;color:var(--mute);margin:0 0 18px;line-height:1.5">Inserisci la tua email e riceverai un link per reimpostare la password.</p>
+      <form id="forgot-form" class="login-form" novalidate>
+        <div>
+          <label for="forgot-email">Email</label>
+          <input id="forgot-email" type="email" placeholder="nome@ristorante.com" required />
+        </div>
+        <div id="forgot-msg" class="login-error"></div>
+        <button type="submit" class="btn btn-primary">Invia link di recupero</button>
+      </form>
+      <button type="button" id="back-to-login" class="btn-link" style="display:block;text-align:center;margin-top:14px;font-size:13px">← Torna al login</button>
+    </div>
+
+    <p class="login-foot">v2.0 · Supabase Auth</p>
   </div>
 </section>
 
@@ -571,7 +590,11 @@
         <span>Carta Vini</span>
         <span class="meta">· admin</span>
       </div>
-      <button id="logout-btn" class="btn btn-ghost">Esci</button>
+      <!-- AGGIUNTO — Bottone gestione utenti -->
+      <div style="display:flex;gap:8px;align-items:center">
+        <button id="users-btn" class="btn btn-ghost">Utenti</button>
+        <button id="logout-btn" class="btn btn-ghost">Esci</button>
+      </div>
     </div>
   </header>
 
@@ -703,6 +726,49 @@
 </section>
 
 
+<!-- AGGIUNTO — VIEW 4 — GESTIONE UTENTI -->
+<section id="view-users" class="view" data-screen-label="04 Users">
+  <header class="app-topbar">
+    <div class="topbar-inner">
+      <div class="topbar-brand">
+        <span class="dot">L</span>
+        <span>Carta Vini</span>
+        <span class="meta">· admin</span>
+      </div>
+      <button id="logout-btn-3" class="btn btn-ghost">Esci</button>
+    </div>
+  </header>
+  <main class="app-main">
+    <button id="back-to-list" class="back-link" type="button">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      Torna alla lista
+    </button>
+    <div class="page-head">
+      <h1 class="page-title">Gestione utenti</h1>
+    </div>
+    <div class="form-card">
+      <h3 style="margin:0 0 4px;font-size:15px;font-weight:700">Crea nuovo utente</h3>
+      <p style="margin:0 0 16px;font-size:13px;color:var(--mute);line-height:1.5">Il nuovo utente riceverà un'email di conferma all'indirizzo indicato.</p>
+      <form id="new-user-form" novalidate>
+        <div class="form-grid">
+          <div>
+            <label for="new-user-email">Email</label>
+            <input id="new-user-email" type="email" placeholder="nome@ristorante.com" required />
+          </div>
+          <div>
+            <label for="new-user-pass">Password iniziale</label>
+            <input id="new-user-pass" type="password" placeholder="minimo 6 caratteri" required minlength="6" />
+          </div>
+        </div>
+        <div style="margin-top:16px;text-align:right">
+          <button type="submit" class="btn btn-primary">Crea utente</button>
+        </div>
+      </form>
+    </div>
+  </main>
+</section>
+
+
 <!-- ───────────── TOAST & MODAL ───────────── -->
 <div id="toast" class="toast"><span class="dot-ok"></span><span id="toast-msg">Salvato</span></div>
 
@@ -804,6 +870,7 @@ const views = {
   login: document.getElementById('view-login'),
   list:  document.getElementById('view-list'),
   form:  document.getElementById('view-form'),
+  users: document.getElementById('view-users'), // AGGIUNTO
 };
 
 async function goto(name) { // AGGIUNTO — async per fetch Supabase
@@ -814,37 +881,47 @@ async function goto(name) { // AGGIUNTO — async per fetch Supabase
   if (name === 'login') {
     document.getElementById('login-form').reset();
     document.getElementById('login-error').classList.remove('show');
+    document.getElementById('login-mode').style.display = '';      // AGGIUNTO
+    document.getElementById('forgot-mode').style.display = 'none'; // AGGIUNTO
   }
 }
 
-function isAuthed() { return sessionStorage.getItem(SESSION_KEY) === '1'; }
+// AGGIUNTO — Controllo sessione Supabase Auth
+async function isAuthed() {
+  const { data: { session } } = await _supabase.auth.getSession();
+  return !!session;
+}
 
 /* ────────────────────────────────────────────
    LOGIN
    ──────────────────────────────────────────── */
-document.getElementById('login-form').addEventListener('submit', e => {
+// AGGIUNTO — Login con Supabase Auth
+document.getElementById('login-form').addEventListener('submit', async e => {
   e.preventDefault();
-  const email = document.getElementById('login-email').value.trim().toLowerCase();
+  const email = document.getElementById('login-email').value.trim();
   const pass  = document.getElementById('login-pass').value;
   const err   = document.getElementById('login-error');
 
-  if (email === CREDS.email && pass === CREDS.password) {
-    sessionStorage.setItem(SESSION_KEY, '1');
-    err.classList.remove('show');
-    goto('list');
-  } else {
+  const { error } = await _supabase.auth.signInWithPassword({ email, password: pass });
+  if (error) {
+    err.textContent = 'Credenziali non valide. Riprova.';
     err.classList.add('show');
     document.getElementById('login-pass').focus();
     document.getElementById('login-pass').select();
+  } else {
+    err.classList.remove('show');
+    await goto('list');
   }
 });
 
-function logout() {
-  sessionStorage.removeItem(SESSION_KEY);
+// AGGIUNTO — Logout con Supabase Auth
+async function logout() {
+  await _supabase.auth.signOut();
   goto('login');
 }
 document.getElementById('logout-btn').addEventListener('click', logout);
 document.getElementById('logout-btn-2').addEventListener('click', logout);
+document.getElementById('logout-btn-3').addEventListener('click', logout); // AGGIUNTO — view utenti
 
 /* ────────────────────────────────────────────
    LIST RENDERING + SEARCH
@@ -1097,9 +1174,77 @@ document.addEventListener('keydown', e => {
 });
 
 /* ────────────────────────────────────────────
+   AGGIUNTO — PASSWORD DIMENTICATA
+   ──────────────────────────────────────────── */
+document.getElementById('forgot-link').addEventListener('click', () => {
+  document.getElementById('login-mode').style.display = 'none';
+  document.getElementById('forgot-mode').style.display = '';
+  document.getElementById('forgot-msg').classList.remove('show');
+  document.getElementById('forgot-form').reset();
+  setTimeout(() => document.getElementById('forgot-email').focus(), 60);
+});
+
+document.getElementById('back-to-login').addEventListener('click', () => {
+  document.getElementById('forgot-mode').style.display = 'none';
+  document.getElementById('login-mode').style.display = '';
+});
+
+document.getElementById('forgot-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const email = document.getElementById('forgot-email').value.trim();
+  const msgEl = document.getElementById('forgot-msg');
+  if (!email) { document.getElementById('forgot-email').focus(); return; }
+
+  const { error } = await _supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + '/Dashboard/reset-password.html'
+  });
+
+  if (error) {
+    msgEl.textContent = 'Errore: ' + error.message;
+    msgEl.style.background = 'rgba(178,58,58,.08)';
+    msgEl.style.color = 'var(--danger)';
+    msgEl.style.borderColor = 'rgba(178,58,58,.24)';
+    msgEl.classList.add('show');
+  } else {
+    msgEl.textContent = '✓ Email inviata! Controlla la posta e clicca il link di recupero.';
+    msgEl.style.background = 'rgba(47,106,78,.08)';
+    msgEl.style.color = 'var(--success)';
+    msgEl.style.borderColor = 'rgba(47,106,78,.24)';
+    msgEl.classList.add('show');
+  }
+});
+
+/* ────────────────────────────────────────────
+   AGGIUNTO — GESTIONE UTENTI
+   ──────────────────────────────────────────── */
+document.getElementById('users-btn').addEventListener('click', () => goto('users'));
+document.getElementById('back-to-list').addEventListener('click', () => goto('list'));
+
+document.getElementById('new-user-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const email = document.getElementById('new-user-email').value.trim();
+  const pass  = document.getElementById('new-user-pass').value;
+
+  if (!email) { document.getElementById('new-user-email').focus(); return; }
+  if (pass.length < 6) { toast('La password deve avere almeno 6 caratteri', true); return; }
+
+  const { error } = await _supabase.auth.signUp({ email, password: pass });
+  if (error) {
+    toast('Errore: ' + error.message, true);
+  } else {
+    toast('Utente creato! Email di conferma inviata.');
+    document.getElementById('new-user-form').reset();
+  }
+});
+
+/* ────────────────────────────────────────────
    BOOT
    ──────────────────────────────────────────── */
-goto(isAuthed() ? 'list' : 'login');
+// AGGIUNTO — Boot asincrono con Supabase Auth
+(async () => {
+  const authed = await isAuthed();
+  await goto(authed ? 'list' : 'login');
+})();
 </script>
 </body>
 </html>
