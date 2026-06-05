@@ -262,6 +262,7 @@
   .cat[data-cat="rosso"] .motif    { color: var(--liberty-burgundy); }
   .cat[data-cat="bianco"] .motif   { color: var(--liberty-green-soft); }
   .cat[data-cat="bollicine"] .motif{ color: var(--liberty-gold); }
+  .cat[data-cat="champagne"] .motif{ color: var(--liberty-gold-soft); }
   .cat[data-cat="passiti"] .motif  { color: var(--liberty-gold-soft); }
   .cat[data-cat="grappe"] .motif   { color: var(--liberty-green); }
 
@@ -388,16 +389,14 @@
   /* Filters */
   .filters {
     display: flex;
+    flex-direction: column;
     gap: 12px;
-    flex-wrap: wrap;
     margin: 24px 0 8px;
     padding: 14px;
     background: var(--liberty-paper-cool);
     box-shadow: inset 0 0 0 1px var(--liberty-line);
   }
   .filter {
-    flex: 1 1 calc(50% - 6px);
-    min-width: 140px;
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -614,7 +613,6 @@
     .cat .motif { width: 160px; height: 200px; }
     .cat-page { padding: 24px 48px 80px; }
     .filters { padding: 18px; }
-    .filter { flex: 1 1 calc(33% - 8px); }
     .wine { padding: 18px 6px; }
     .wine .name { font-size: 21px; }
     .wine .price { font-size: 20px; }
@@ -789,6 +787,32 @@
       </g>
     </symbol>
 
+    <!-- Art Nouveau champagne flute + étoile (Champagne) -->
+    <symbol id="motif-champagne" viewBox="0 0 110 140">
+      <g fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- flute glass -->
+        <path d="M55 134 L55 90"/>
+        <path d="M42 134 L68 134"/>
+        <path d="M46 90 L64 90"/>
+        <path d="M46 90 C 44 70, 43 50, 48 36 C 50 30, 60 30, 62 36 C 67 50, 66 70, 64 90"/>
+        <!-- rising bubbles inside -->
+        <circle cx="53" cy="76" r="1.4"/>
+        <circle cx="58" cy="68" r="1.2"/>
+        <circle cx="54" cy="58" r="1.6"/>
+        <circle cx="59" cy="48" r="1"/>
+        <circle cx="55" cy="40" r="1.3"/>
+        <!-- decorative stars around -->
+        <g opacity="0.7">
+          <path d="M28 28 L30 22 L32 28 L38 30 L32 32 L30 38 L28 32 L22 30 Z"/>
+          <path d="M76 20 L77.5 15 L79 20 L84 21.5 L79 23 L77.5 28 L76 23 L71 21.5 Z"/>
+          <path d="M20 60 L21 56 L22 60 L26 61 L22 62 L21 66 L20 62 L16 61 Z"/>
+          <path d="M86 54 L87.5 49 L89 54 L94 55.5 L89 57 L87.5 62 L86 57 L81 55.5 Z"/>
+          <path d="M34 10 L35 7 L36 10 L39 11 L36 12 L35 15 L34 12 L31 11 Z"/>
+          <path d="M82 36 L83 33 L84 36 L87 37 L84 38 L83 41 L82 38 L79 37 Z"/>
+        </g>
+      </g>
+    </symbol>
+
     <!-- Art Nouveau juniper sprig (Grappe) -->
     <symbol id="motif-grappe" viewBox="0 0 110 140">
       <g fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
@@ -839,10 +863,22 @@
       </div>
 
       <div class="cats">
-        <button class="cat" type="button" data-cat="bollicine">
+        <button class="cat" type="button" data-cat="champagne">
           <div class="row">
             <div>
               <div class="label">Categoria · I</div>
+              <h2 class="name"><em>Champagne</em></h2>
+              <p class="count" id="count-champagne">— maison francesi</p>
+              <span class="arrow">scopri la selezione <span class="ar"></span></span>
+            </div>
+            <svg class="motif" aria-hidden="true"><use href="#motif-champagne"/></svg>
+          </div>
+        </button>
+
+        <button class="cat" type="button" data-cat="bollicine">
+          <div class="row">
+            <div>
+              <div class="label">Categoria · II</div>
               <h2 class="name"><em>Bollicine</em></h2>
               <p class="count" id="count-bollicine">— metodo classico & charmat</p>
               <span class="arrow">scopri la selezione <span class="ar"></span></span>
@@ -854,7 +890,7 @@
         <button class="cat" type="button" data-cat="bianco">
           <div class="row">
             <div>
-              <div class="label">Categoria · II</div>
+              <div class="label">Categoria · III</div>
               <h2 class="name">Vino <em>Bianco</em></h2>
               <p class="count" id="count-bianco">— vini fermi · 5 regioni</p>
               <span class="arrow">scopri la selezione <span class="ar"></span></span>
@@ -866,7 +902,7 @@
         <button class="cat" type="button" data-cat="rosso">
           <div class="row">
             <div>
-              <div class="label">Categoria · III</div>
+              <div class="label">Categoria · IV</div>
               <h2 class="name">Vino <em>Rosso</em></h2>
               <p class="count" id="count-rosso">— vini fermi · 6 regioni</p>
               <span class="arrow">scopri la selezione <span class="ar"></span></span>
@@ -878,7 +914,7 @@
         <button class="cat" type="button" data-cat="passiti">
           <div class="row">
             <div>
-              <div class="label">Categoria · IV</div>
+              <div class="label">Categoria · V</div>
               <h2 class="name"><em>Passiti</em> &amp; Dolci</h2>
               <p class="count" id="count-passiti">— vini da meditazione</p>
               <span class="arrow">scopri la selezione <span class="ar"></span></span>
@@ -890,7 +926,7 @@
         <button class="cat" type="button" data-cat="grappe">
           <div class="row">
             <div>
-              <div class="label">Categoria · V</div>
+              <div class="label">Categoria · VI</div>
               <h2 class="name"><em>Grappe</em> &amp; Distillati</h2>
               <p class="count" id="count-grappe">— da fine pasto</p>
               <span class="arrow">scopri la selezione <span class="ar"></span></span>
@@ -982,6 +1018,12 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const WINES = {
+  champagne: {
+    title: '<em>Champagne</em>',
+    blurb: 'Le grandi maison francesi: cuvée, blanc de blancs e prestige dalla regione dello Champagne.',
+    eyebrow: 'Categoria · I · Champagne',
+    list: [],
+  },
   rosso: {
     title: 'Vino <em>Rosso</em>',
     blurb: 'Sangiovese, Nebbiolo, Corvina e blend: una scelta dal Nord al Sud.',
@@ -1332,7 +1374,7 @@ const $ = (s, root = document) => root.querySelector(s);
 const $$ = (s, root = document) => Array.from(root.querySelectorAll(s));
 
 const REGION_ORDER = [
-  'Trentino-Alto Adige', 'Trentino', 'Friuli-Venezia Giulia', 'Lombardia',
+  'Trentino-Alto Adige', 'Trentino', 'Valle d\'Aosta', 'Friuli-Venezia Giulia', 'Lombardia',
   'Veneto', 'Piemonte', 'Emilia-Romagna', 'Toscana', 'Marche',
   'Campania', 'Puglia', 'Sicilia', 'Sardegna', 'Champagne', 'Francia',
 ];
@@ -1350,13 +1392,15 @@ let state = {
 
 /* ────── Counts on home cards ────── */
 function updateHomeCounts() {
-  for (const key of ['bollicine', 'bianco', 'rosso', 'passiti', 'grappe']) {
+  for (const key of ['champagne', 'bollicine', 'bianco', 'rosso', 'passiti', 'grappe']) {
     const wines = WINES[key].list;
     const regions = new Set(wines.map(w => w.region));
     const el = $(`#count-${key}`);
     if (!el) continue;
     const suffix = (key === 'passiti' || key === 'grappe')
       ? `${wines.length} etichette · servizio al calice`
+      : key === 'champagne'
+      ? `${wines.length} etichette · maison francesi`
       : `${wines.length} etichette · ${regions.size} territori`;
     el.textContent = '— ' + suffix;
   }
@@ -1532,7 +1576,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Initial route from hash (for refresh persistence)
   const hash = (location.hash || '').replace('#', '');
-  if (['bollicine', 'bianco', 'rosso', 'passiti', 'grappe'].includes(hash)) {
+  if (['champagne', 'bollicine', 'bianco', 'rosso', 'passiti', 'grappe'].includes(hash)) {
     go('category', hash);
   } else {
     go('home');

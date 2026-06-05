@@ -364,6 +364,7 @@
   .badge.rosso     { background: rgba(110,44,54,.08); color: var(--burgundy); border-color: rgba(110,44,54,.18); }
   .badge.bianco    { background: #FBF6E5; color: #7A5C18; border-color: #EADBA1; }
   .badge.bollicine { background: #E9F1EB; color: #2F6A4E; border-color: #C5DBCB; }
+  .badge.champagne { background: #FDF6E3; color: #8B6914; border-color: #E8D48A; }
   .badge.passiti   { background: #FBF1E0; color: #9A6B1E; border-color: #E8CF9E; }
   .badge.grappe    { background: #F1EDE6; color: #5C5046; border-color: #DED5C7; }
 
@@ -616,6 +617,7 @@
         <button type="button" class="chip" data-cat="Rosso">Rosso</button>
         <button type="button" class="chip" data-cat="Bianco">Bianco</button>
         <button type="button" class="chip" data-cat="Bollicine">Bollicine</button>
+        <button type="button" class="chip" data-cat="Champagne">Champagne</button>
         <button type="button" class="chip" data-cat="Passiti">Passiti</button>
         <button type="button" class="chip" data-cat="Grappe">Grappe</button>
       </div>
@@ -674,6 +676,7 @@
               <option value="Rosso">Rosso</option>
               <option value="Bianco">Bianco</option>
               <option value="Bollicine">Bollicine</option>
+              <option value="Champagne">Champagne</option>
               <option value="Passiti">Passiti</option>
               <option value="Grappe">Grappe</option>
             </select>
@@ -941,7 +944,7 @@ function renderList() {
   });
 
   // sort: category then name for stable UX
-  const catOrder = { 'Bollicine': 0, 'Bianco': 1, 'Rosso': 2, 'Passiti': 3, 'Grappe': 4 };
+  const catOrder = { 'Champagne': 0, 'Bollicine': 1, 'Bianco': 2, 'Rosso': 3, 'Passiti': 4, 'Grappe': 5 };
   filtered.sort((a, b) => {
     const c = (catOrder[a.category] ?? 9) - (catOrder[b.category] ?? 9);
     return c !== 0 ? c : a.name.localeCompare(b.name, 'it');
